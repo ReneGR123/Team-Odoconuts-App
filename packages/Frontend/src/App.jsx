@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./utils/supabase";
 import "./App.css";
+import SignUp from "./components/SignUp"; 
 
 function App() {
   const [quests, setQuests] = useState([]);
+  
+  const [email, setEmail] = useState(""); 
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
     async function getQuests() {
@@ -27,6 +33,8 @@ function App() {
       <h1>SLAP</h1>
       <p>Supabase connection test</p>
       <p>Number of quests: {quests.length}</p>
+      
+      <SignUp />
     </div>
   );
 }
