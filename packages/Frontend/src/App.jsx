@@ -3,6 +3,7 @@ import { supabase } from "./utils/supabase";
 import "./App.css";
 import SignUp from "./components/SignUp"; 
 
+// chooses and arranges the current page
 function App() {
   const [quests, setQuests] = useState([]);
   
@@ -31,9 +32,10 @@ function App() {
   return (
     <div>
       <h1>SLAP</h1>
-      <p>Supabase connection test</p>
+      {/*<p>Supabase connection test</p>
       <p>Number of quests: {quests.length}</p>
-      
+
+      grab signup content from sign up creation file*/} 
       <SignUp />
     </div>
   );

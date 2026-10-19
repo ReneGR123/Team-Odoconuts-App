@@ -1,5 +1,7 @@
 import { useState } from "react"; 
 import { signUp } from "../services/authService"; 
+import "./Signup.css";
+
 
 function SignUp() {
   const [username, setUsername] = useState(""); 
@@ -21,46 +23,54 @@ function SignUp() {
 
   return (
     <div>
-      <h2>Create an Account</h2>
+      <h2>Join Slap</h2>
+      <h3>Start Now — We know you wanna get questing.</h3>
 
     <form onSubmit={handleSubmit}>
-    <div>
-      <label>Username:</label>
+    <div className= "signup-field">
+      <label htmlFor="username-field">Username</label>
       <input
 	  type="text"
+    id="username-field"
+    placeholder="Username"
 	  value={username}
 	  onChange={(event) => setUsername(event.target.value)}
       />
     </div>
 
-    <div>
+    {/* <div>
       <label>Display Name:</label> 
       <input
 	  type="text"
 	  value={displayName}
 	  onChange={(event) => setDisplayName(event.target.value)}
       />
-    </div>
+    </div> */}
 
-    <div>
-      <label>Email:</label>
+    <div className= "signup-field">
+      <label htmlFor="email-field">Email</label>
       <input
 	  type="email"
+    id="email-field"
+    placeholder="Email"
 	  value={email}
 	  onChange={(event) => setEmail(event.target.value)}
       />
     </div> 
 
-    <div>  
-      <label>Password</label>
+    <div className= "signup-field">  
+      <label htmlFor="password-field">Password</label>
       <input
 	  type="password"
+    id="password-field"
+    placeholder="Password"
 	  value={password}
 	  onChange={(event) => setPassword(event.target.value)}
       />
     </div>
-    
-    <button type="submit">Sign Up</button>
+    <div className="buttons">
+      <button type="submit">Sign Up</button>
+    </div>
     </form>
     </div>
   );

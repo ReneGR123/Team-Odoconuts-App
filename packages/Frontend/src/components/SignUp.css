@@ -1,0 +1,14 @@
+.signup-field {
+    position: relative;
+    width: 300px;   
+}
+.signup-field input{
+    width: 100%;
+    padding: 17px 16px;
+    /* box-sizing: border-box; */
+    border: 2px solid #E6E6E6;
+    border-radius: 100px;
+    background-color: #f8f8f8;
+    /* outline: none; */
+    /* transition: boarder-color 0.3s, box-shadow 0.3;  */ 
+}
