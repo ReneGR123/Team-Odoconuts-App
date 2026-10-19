@@ -1,0 +1,85 @@
+.profile-button svg {
+  width: 32px;
+  height: 32 px; 
+  stroke-width: 2; 
+}
+
+.top-bar {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  right: 28px;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* SLAP + search box */
+.search-container {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  padding: 0 24px;
+
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  background: #174a3a;
+}
+
+.search-bar {
+  width: 260px;
+  height: 100%;
+  padding: 0 20px;
+
+  border: none;
+  outline: none;
+
+  font-size: 20px;
+  background: white;
+  color: #333;
+}
+
+/* Filter buttons */
+.filter-container {
+  display: flex;
+  gap: 18px;
+}
+
+.filter-button {
+  height: 64px;
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 14px;
+
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Profile button */
+.profile-button {
+  width: 64px;
+  height: 64px;
+  margin-left: auto;
+
+  border: none;
+  border-radius: 14px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
