@@ -1,6 +1,6 @@
 import { useState } from "react"; 
 import { signUp } from "../services/authService"; 
-import "./Signup.css";
+import "./SignUp.css";
 
 
 function SignUp() {

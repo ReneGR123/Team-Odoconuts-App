@@ -1,7 +1,10 @@
 import { User } from "lucide-react";
+import { useNavigate } from "react-router-dom"; 
 import "./TopBar.css";
 
 function TopBar() {
+  const navigate = useNavigate(); 
+  
   return (
     <div className="top-bar">
       <div className="search-container">
@@ -26,7 +29,7 @@ function TopBar() {
         </button>
       </div>
 
-      <button className="profile-button" aria-label="Profile">
+      <button className="profile-button" aria-label="Profile" onClick={() => navigate("/signup")}>
         <User />
       </button>
     </div>
