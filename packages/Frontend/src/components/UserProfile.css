@@ -1,0 +1,212 @@
+/* Entire profile page */
+.profile-page {
+  position: relative;
+
+  min-height: 100vh;
+  width: 100%;
+
+  background-color: white;
+  color: black;
+
+  padding: 12px 26px;
+  box-sizing: border-box;
+}
+
+
+/* Back button */
+.back-button {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 12px;
+
+  background-color: white;
+  color: black;
+
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+
+  font-family: "Inter", sans-serif; 
+  font-size: 14px; 
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.back-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* Profile picture + username + stats */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+
+  padding-top: 65px;
+  margin-left: 28px;
+}
+
+.profile-picture {
+  width: 165px;
+  height: 165px;
+
+  border-radius: 50%;
+  background-color: #d9d9d9;
+
+  flex-shrink: 0;
+}
+
+
+/* Username */
+.profile-info h1 {
+  margin: 0 0 20px 0;
+
+  font-size: 52px;
+  font-weight: 800;
+}
+
+
+/* Profile statistics */
+.profile-stats {
+  display: flex;
+  gap: 55px;
+}
+
+.profile-stats div {
+  text-align: center;
+}
+
+.profile-stats p {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.profile-stats strong {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 34px;
+  line-height: 1;
+}
+
+
+/* Quest navigation bar */
+.profile-tabs {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin: 35px 25px 0 25px;
+  padding: 14px 18px;
+
+  background-color: #d9d9d9;
+  border-radius: 8px;
+}
+
+
+/* Individual quest tab */
+.profile-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  height: 46px;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 6px;
+
+  background-color: white;
+  color: black;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.profile-tab:hover {
+  background-color: #f2f2f2;
+}
+
+.profile-tab svg {
+  width: 20px;
+  height: 20px;
+
+  stroke-width: 1.8;
+  flex-shrink: 0;
+}
+
+
+/* Right-side profile navigation */
+.profile-side-nav {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+
+/* SLAP logo */
+.profile-slap-logo {
+  margin-top: 3px;
+
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* container for side buttons */
+.profile-nav-buttons {
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  gap: 6px;
+}
+
+
+/* individual buttons */
+.profile-nav-button {
+  width: 44px; 
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 0; 
+
+  background-color: white;
+  color: black; 
+
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer; 
+}
+
+.profile-nav-button:hover {
+  background-color: #f2f2f2;
+}
+
+.profile-nav-button svg {
+  width: 28px;
+  height: 28px;
+
+  stroke-width: 1.5;
+}

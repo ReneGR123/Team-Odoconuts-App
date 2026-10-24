@@ -3,6 +3,7 @@ import QuestMap from "./components/QuestMap.jsx";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/SideBar";
 import SignUp from "./components/SignUp";
+import UserProfile from "./components/UserProfile"; 
 
 // chooses and arranges the current page
 function App() {
@@ -21,6 +22,7 @@ function App() {
 		/>
 
 		<Route path="/signup" element={<SignUp />} />
+		<Route path="/profile" element={<UserProfile />} />
 	      </Routes>
 	   </BrowserRouter>
 	);
