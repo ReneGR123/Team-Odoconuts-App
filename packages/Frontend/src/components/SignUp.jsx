@@ -1,9 +1,12 @@
 import { useState } from "react"; 
 import { signUp } from "../services/authService"; 
 import "./SignUp.css";
+import { useNavigate } from "react-router-dom"; 
 
 
 function SignUp() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState(""); 
   const [displayName, setDisplayName] = useState(""); 
   const [email, setEmail] = useState(""); 
@@ -15,7 +18,9 @@ function SignUp() {
 
     try {
        const data = await signUp(email, password, username, displayName); 
-       console.log("Account created:", data); 
+       console.log("Account created:", data);
+       navigate("/profile") 
+
       } catch (error) {
 	      console.error("SignUp failed:", error.message); 
       }
