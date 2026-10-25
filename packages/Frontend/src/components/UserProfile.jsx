@@ -1,4 +1,4 @@
-import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus } from "lucide-react";
+import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 
@@ -10,9 +10,15 @@ function UserProfile() {
 	
 	  {/* right side of user profile */}
 	<div className="profile-side-nav">
-	   <div className="profile-slap-logo">SLAP</div>
+	 <button className="profile-slap-logo" onClick={() => navigate("/")} >
+	  SLAP
+	  </button>
 
-	<div className-="profile-nav-buttons">
+	<div className="profile-nav-buttons">
+	  <button className="profile-nav-button" aria-label="Menu">
+	     <Menu />
+	  </button>
+
 	   <button className="profile-nav-button" aria-label="Friends">
 	     <Users />
 	  </button>
