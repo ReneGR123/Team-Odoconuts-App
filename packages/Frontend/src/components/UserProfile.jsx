@@ -3,7 +3,11 @@ import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 
 function UserProfile() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  {/* temporary quest for logic */}
+  const quests = [ { 
+     id: 1, name: "Bishop Peak" 
+  } ];
 
   return (
     <div className="profile-page">
@@ -86,6 +90,15 @@ function UserProfile() {
 	    Planned
 	  </button>
 	</div>
+     
+     {/* quest grid */}
+     <div className="quest-grid">
+	{quests.map((quest) => (
+	   <div className="quest-card" key={quest.id}>
+		{quest.name}
+	   </div> 
+	))}
+     </div>
     </div>
   );
 }
