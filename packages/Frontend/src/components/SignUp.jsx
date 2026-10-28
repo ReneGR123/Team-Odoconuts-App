@@ -1,14 +1,16 @@
 import { useState } from "react"; 
 import { signUp } from "../services/authService"; 
-import "./SignUp.css";
+import "./SignLog.css";
 import { useNavigate } from "react-router-dom"; 
+import { Link } from "react-router-dom"; 
+import logo from "../assets/SLAP_Logo_Black.svg";
+import patrick from "../assets/dumb-patrick.png";
 
 
 function SignUp() {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState(""); 
-  const [displayName, setDisplayName] = useState(""); 
+  const [username, setUsername] = useState("");  
   const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState("");
 
@@ -17,7 +19,7 @@ function SignUp() {
     event.preventDefault(); 
 
     try {
-       const data = await signUp(email, password, username, displayName); 
+       const data = await signUp(email, password, username); 
        console.log("Account created:", data);
        navigate("/profile") 
 
@@ -27,58 +29,64 @@ function SignUp() {
   }
 
   return (
-    <div>
-      <h1>SLAP</h1>
-      <h2>Join Slap</h2>
-      <h3>Start Now — We know you wanna get questing.</h3>
+    <main className="signlog">
+      <img className="Slap-logo-black" src={logo} alt="Logo" />
+      <img className="Patrick" src={patrick} alt="Dumb Patrick"/>
+      <div className="signlog-content">
+      <header className="header"> 
+        <h1>Join Slap</h1>
+        <p>Start Now — We know you wanna get questing.</p>
+      </header>
 
     <form onSubmit={handleSubmit}>
-    <div className= "signup-field">
+    <div className= "signlog-field">
       <label htmlFor="username-field">Username</label>
       <input
-	  type="text"
-    id="username-field"
-    placeholder="Username"
-	  value={username}
-	  onChange={(event) => setUsername(event.target.value)}
+	      type="text"
+        id="username-field"
+        name="username"
+        autoComplete="username"
+        required
+	      value={username}
+	      onChange={(event) => setUsername(event.target.value)}
       />
     </div>
 
-    {/* <div>
-      <label>Display Name:</label> 
-      <input
-	  type="text"
-	  value={displayName}
-	  onChange={(event) => setDisplayName(event.target.value)}
-      />
-    </div> */}
-
-    <div className= "signup-field">
+    <div className= "signlog-field">
       <label htmlFor="email-field">Email</label>
       <input
-	  type="email"
-    id="email-field"
-    placeholder="Email"
-	  value={email}
-	  onChange={(event) => setEmail(event.target.value)}
+	      type="email"
+        id="email-field"
+        name="email"
+        autoComplete="email"
+        required
+	      value={email}
+	      onChange={(event) => setEmail(event.target.value)}
       />
     </div> 
 
-    <div className= "signup-field">  
+    <div className= "signlog-field">  
       <label htmlFor="password-field">Password</label>
       <input
-	  type="password"
-    id="password-field"
-    placeholder="Password"
-	  value={password}
-	  onChange={(event) => setPassword(event.target.value)}
+	      type="password"
+        id="password-field"
+        name="password"
+        autoComplete="new-password"
+        required
+	      value={password}
+	      onChange={(event) => setPassword(event.target.value)}
       />
     </div>
+
     <div className="buttons">
       <button type="submit">Sign Up</button>
     </div>
+    <p>
+      Already have an Account? <Link to="/login">Log In</Link>
+    </p>
     </form>
     </div>
+    </main>
   );
 }
 
