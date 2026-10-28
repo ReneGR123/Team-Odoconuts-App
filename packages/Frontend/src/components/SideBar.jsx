@@ -1,30 +1,26 @@
 import {
-  Maximize2,
-  Compass,
   Plus,
+  Compass,
   Users,
   Heart,
   BarChart3,
-  Navigation
+  Sparkles
 } from "lucide-react";
 
 import "./SideBar.css";
 
 function SideBar() {
   return (
-    <div className="side-bar">
-      <button className="sidebar-button" aria-label="Expand">
-        <Maximize2 />
+    <div className="side-bar"> 
+      
+      <button className="sidebar-button" aria-label="Add Quest">
+        <Plus />
       </button>
 
       <div className="sidebar-divider"></div>
 
       <button className="sidebar-button" aria-label="Discover">
         <Compass />
-      </button>
-
-      <button className="sidebar-button" aria-label="Add Quest">
-        <Plus />
       </button>
 
       <button className="sidebar-button" aria-label="Friends">
@@ -40,7 +36,7 @@ function SideBar() {
       </button>
 
       <button className="sidebar-button" aria-label="Explore">
-        <Navigation />
+        <Sparkles />
       </button>
     </div>
   );
