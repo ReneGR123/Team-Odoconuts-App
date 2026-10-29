@@ -16,30 +16,30 @@ router.get("/", async (req, res) => {
 });
 
 //filler for post ing a new quest, not final design as quest does not exist yet
-router.post("/", async (req, res) => {
-  const { title, description } = req.body ?? {};
+// router.post("/", async (req, res) => {
+//   const { title, description } = req.body ?? {};
 
-  if(!title){
-    return res.status(400).json({ error: "Missing title" });
-  }
+//   if(!title){
+//     return res.status(400).json({ error: "Missing title" });
+//   }
 
-  if(!description){
-    return res.status(400).json({ error: "Missing description" });
-  }
+//   if(!description){
+//     return res.status(400).json({ error: "Missing description" });
+//   }
 
-  const { data, error } = await supabase.from("quests")
-  .insert([{ title, description }])
-  .select()
-  .single();
+//   const { data, error } = await supabase.from("quests")
+//   .insert([{ title, description }])
+//   .select()
+//   .single();
 
-  if (error) {
-    console.error("Yo quests was not created: ", error);
-    return res.status(500).json({ error: "couldn't create quest" });
-  }
+//   if (error) {
+//     console.error("Yo quests was not created: ", error);
+//     return res.status(500).json({ error: "couldn't create quest" });
+//   }
 
-  return res.status(201).json(data);
+//   return res.status(201).json(data);
 
-});
+// });
 
 //Future shit when quests get created
 //Quest gets deleted

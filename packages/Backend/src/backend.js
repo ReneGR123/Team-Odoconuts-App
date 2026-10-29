@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import questsRouter from "./routes/quests.js";
+import healthRouter from "./routes/health.js";
 // import profileRouter from "./routes/profile.js";
 
 const app = express();
@@ -15,8 +16,9 @@ app.use(express.json());
 
 
 // ---------- routes ----------
-//Anything with /api/quests will be handled by quest.js
 app.use("/api/quests", questsRouter);
+app.use("/api/health", healthRouter);
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
