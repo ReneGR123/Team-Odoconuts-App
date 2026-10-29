@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./utils/supabase";
+// import { supabase } from "./utils/supabase";
 import "./App.css";
 import SignUp from "./components/SignUp"; 
+import { getQuests } from "./services/questService";
 
 function App() {
   const [quests, setQuests] = useState([]);
@@ -11,21 +12,27 @@ function App() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
 
+  // useEffect(() => {
+  //   async function getQuests() {
+  //     const { data, error } = await supabase
+  //       .from("quests")
+  //       .select("*");
+
+  //     if (error) {
+  //       console.error("Error getting quests:", error);
+  //     } else {
+  //       console.log("Quests:", data);
+  //       setQuests(data);
+  //     }
+  //   }
+
+  //   getQuests();
+  // }, []);
+
   useEffect(() => {
-    async function getQuests() {
-      const { data, error } = await supabase
-        .from("quests")
-        .select("*");
-
-      if (error) {
-        console.error("Error getting quests:", error);
-      } else {
-        console.log("Quests:", data);
-        setQuests(data);
-      }
-    }
-
-    getQuests();
+    getQuests()
+    .then((data) => setQuests(data))
+    .catch((error) => console.error("Error fetching quests:", error.message));
   }, []);
 
   return (
