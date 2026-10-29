@@ -2,6 +2,7 @@ import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom"; 
 import "./TopBar.css";
 import { supabase } from "../utils/supabase"; 
+import icon from "../assets/SLAP_icon_white.png";
 
 function TopBar() {
   const navigate = useNavigate(); 
@@ -21,9 +22,11 @@ function TopBar() {
   return (
     <div className="top-bar">
       <div className="search-container">
-        <div className="logo">SLAP</div>
+        <div className="icon-container">
+          <img className="Slap-icon-white" src={icon} alt="icon" />
+        </div>
 
-        <input
+        <input 
           className="search-bar"
           type="text"
           placeholder="where to..."
