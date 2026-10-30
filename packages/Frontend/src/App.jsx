@@ -1,49 +1,43 @@
-import { useEffect, useState } from "react";
-// import { supabase } from "./utils/supabase";
-import "./App.css";
-import SignUp from "./components/SignUp"; 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import QuestMap from "./components/QuestMap.jsx";
+import TopBar from "./components/TopBar";
+import SideBar from "./components/SideBar";
+import SignUp from "./components/SignUp";
 import { getQuests } from "./services/questService";
+import LogIn from "./components/LogIn";
+import UserProfile from "./components/UserProfile"; 
 
+// chooses and arranges the current page
 function App() {
-  const [quests, setQuests] = useState([]);
-  
-  const [email, setEmail] = useState(""); 
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [displayName, setDisplayName] = useState("");
+const [quests, setQuests] = useState([]);
 
-  // useEffect(() => {
-  //   async function getQuests() {
-  //     const { data, error } = await supabase
-  //       .from("quests")
-  //       .select("*");
-
-  //     if (error) {
-  //       console.error("Error getting quests:", error);
-  //     } else {
-  //       console.log("Quests:", data);
-  //       setQuests(data);
-  //     }
-  //   }
-
-  //   getQuests();
-  // }, []);
-
-  useEffect(() => {
+   useEffect(() => {
     getQuests()
     .then((data) => setQuests(data))
     .catch((error) => console.error("Error fetching quests:", error.message));
   }, []);
 
-  return (
-    <div>
-      <h1>SLAP</h1>
-      <p>Supabase connection test</p>
-      <p>Number of quests: {quests.length}</p>
-      
-      <SignUp />
-    </div>
-  );
+
+	return (
+	  <BrowserRouter> 
+	     <Routes>
+		<Route
+		  path="/"
+		  element={
+		    <div className="home-page">
+			<QuestMap />
+			<TopBar />
+			<SideBar />
+		    </div>
+		  }
+		/>
+
+		<Route path="/signup" element={<SignUp />} />
+		<Route path="/profile" element={<UserProfile />} />
+    <Route path="/login" element={<LogIn />} />
+	      </Routes>
+	   </BrowserRouter>
+	);
 }
 
-export default App;
+export default App; 

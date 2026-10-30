@@ -1,0 +1,97 @@
+.signlog-content{
+    margin-left: 81px;
+    margin-right: 81px;
+    max-width: 480px;
+    padding-bottom: 120px;
+    padding-top: 175px;
+    padding-left: 60px;
+} 
+
+.header{
+    text-align: center;
+    line-height: 0.5;
+    margin-bottom: 70px;
+}
+.header p{
+    color: #808080;
+}
+
+.signlog-content form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+ 
+.signlog-field {
+    position: relative;
+    width: 400px;   
+    padding: 5px;
+    font-size: 14px;
+    padding-top: 20px;
+    margin-bottom: 5px;
+}
+
+.signlog-field input{
+  width: 100%;
+  background: none;
+  box-sizing: border-box; 
+  padding: 12px;
+  border: 1px solid #ddd; 
+  font-size: 14px;
+  border-radius: 14px;
+  transition: border-color 0.5s ease; 
+}
+
+.signlog-field input:focus{
+  border-color: #222;
+}
+
+.signlog-field label{
+    position: absolute;
+    left: 20px;
+    top: calc(50% + 10px);
+    transform: translateY(-60%);
+    color: #808080;
+    transition: 
+        top 0.3s ease,
+        font-size 0.3s ease,
+        color 0.3s ease;
+    padding: 0 5px;
+}
+.signlog-field:focus-within label,
+.signlog-field:has(input:valid) label {
+    top: 22px;
+    left: 20px;
+    font-size: 12px;
+    background: #fff;
+    color: #222;
+    border-color: #222;
+    transition-delay: 0.1s;
+}
+
+.signlog-field input + label{
+    padding: 0 5px; 
+}
+
+.buttons{
+    padding-top: 20px;
+}
+.buttons button{
+    background: #7a608a;
+    border: none; 
+    box-sizing: border-box; 
+    padding: 12px 175px; 
+    font-size: 14px;
+    color:#fff;
+    font-weight:bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.buttons button:hover{
+    background: #4f3b5c;
+}
+.buttons button:active{
+    color: #ddd;
+   padding: 10px 173px
+}
