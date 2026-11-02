@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
    
   if(error){
     console.error("Error getting categories:", error);
-    res.status(500).json({error: "couldn't load"});
+    return res.status(500).json({error: "couldn't load"});
   }
   return res.json(data);
 });

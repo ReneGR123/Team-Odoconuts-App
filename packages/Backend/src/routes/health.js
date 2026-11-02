@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
   return res.json({ status: "healthy" });
 });
 
+//does supabase work?
 router.get("/supabase", async (req, res) => {
     const start = Date.now();
     

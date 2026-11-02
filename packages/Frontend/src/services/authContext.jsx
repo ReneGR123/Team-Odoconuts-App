@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         supabase.auth.getSession().then(({data}) => {
-            setSession(data).session;
+            setSession(data.session);
             setLoading(false);
         });
 
