@@ -2,11 +2,25 @@ import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, 
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 import QuestCard from "../components/QuestCard";
-import { mockQuests } from "../data/mockQuests";
+import { useEffect, useState } from "react";
+import { getMyCreatedQuests } from "../services/questService";
 
 function UserProfile() {
-  const navigate = useNavigate();
-  {/* temporary quest for logic */}
+  	const navigate = useNavigate();
+  	const [quests, setQuests] = useState([]);
+
+	useEffect(() => {
+		async function loadMyQuests() {
+			try {
+				const data = await getMyCreatedQuests();
+				setQuests(data);
+			} catch (error) {
+				console.error("Could not load your quests:", error.message);
+			}
+		}
+
+		loadMyQuests();
+	}, []);
 
   return (
     <div className="profile-page">
@@ -92,7 +106,7 @@ function UserProfile() {
      
      {/* quest grid */}
      <div className="quest-grid">
-		{mockQuests.map((quest) => (
+		{quests.map((quest) => (
     	<QuestCard key={quest.id} quest={quest} /> ))}
      </div>
     </div>
