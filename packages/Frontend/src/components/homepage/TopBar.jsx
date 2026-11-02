@@ -1,8 +1,8 @@
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom"; 
 import "./TopBar.css";
-import { supabase } from "../utils/supabase"; 
-import icon from "../assets/SLAP_icon_white.png";
+import { supabase } from "../../utils/supabase"; 
+import icon from "../../assets/SLAP_icon_white.png";
 
 function TopBar() {
   const navigate = useNavigate(); 

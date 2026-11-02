@@ -1,10 +1,10 @@
 import { useState } from "react"; 
-import { signUp } from "../services/authService"; 
+import { signUp } from "../../services/authService"; 
 import "./SignLog.css";
 import { useNavigate } from "react-router-dom"; 
 import { Link } from "react-router-dom"; 
-import logo from "../assets/SLAP_Logo_Black.svg";
-import patrick from "../assets/dumb-patrick.png";
+import logo from "../../assets/SLAP_Logo_Black.svg";
+import patrick from "../../assets/dumb-patrick.png";
 
 
 function SignUp() {

@@ -19,7 +19,7 @@ function UserProfile() {
 	  </button>
 
 	<div className="profile-nav-buttons">
-	  <button className="profile-nav-button" aria-label="Menu">
+	  <button className="profile-nav-button" aria-label="Settings" onClick={() => navigate("/settings")}>
 	     <Menu />
 	  </button>
 

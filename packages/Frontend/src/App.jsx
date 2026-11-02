@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import QuestMap from "./components/QuestMap.jsx";
-import TopBar from "./components/TopBar";
-import SideBar from "./components/SideBar";
-import SignUp from "./components/SignUp";
-import LogIn from "./components/LogIn";
-import UserProfile from "./components/UserProfile"; 
+import QuestMap from "./components/homepage/QuestMap.jsx";
+import TopBar from "./components/homepage/TopBar";
+import SideBar from "./components/homepage/SideBar";
+import SignUp from "./components/userauth/SignUp";
+import LogIn from "./components/userauth/LogIn";
+import UserProfile from "./components/profile/UserProfile";
+import Settings from "./components/profile/Settings"; 
+
 
 // chooses and arranges the current page
 function App() {
@@ -23,7 +25,8 @@ function App() {
 		/>
 
 		<Route path="/signup" element={<SignUp />} />
-		<Route path="/profile" element={<UserProfile />} />
+		<Route path="/profile" element={<UserProfile />} /> 
+		<Route path="/settings" element={<Settings />} />
     <Route path="/login" element={<LogIn />} />
 	      </Routes>
 	   </BrowserRouter>
