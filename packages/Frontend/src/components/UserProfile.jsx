@@ -1,13 +1,50 @@
 import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
+import { supabase } from "../utils/supabase";
+import { useEffect, useRef, useState } from "react";
+import {logOut} from "../services/authService.js";
+
 
 function UserProfile() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
   {/* temporary quest for logic */}
   const quests = [ { 
      id: 1, name: "Bishop Peak" 
   } ];
+
+  //closes the menu when clicking outside of it
+  useEffect(() => {
+	if(!menuOpen) return;
+
+
+	function handleClickOutside(event) {
+		if (menuRef.current && !menuRef.current.contains(event.target)) {
+			setMenuOpen(false);
+		}
+	}
+		document.addEventListener("click", handleClickOutside);
+
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+  }, [menuOpen]);
+
+  async function handleLogOut() {
+	try{
+		await logOut();
+		setMenuOpen(false);
+		navigate("/");
+	} catch (error) {
+		console.error("Error logging out:", error.message);
+	}
+	
+	setMenuOpen(false);
+	navigate("/");
+  }
 
   return (
     <div className="profile-page">
@@ -19,9 +56,20 @@ function UserProfile() {
 	  </button>
 
 	<div className="profile-nav-buttons">
-	  <button className="profile-nav-button" aria-label="Menu">
-	     <Menu />
-	  </button>
+		<div className="menu-wrapper" ref={menuRef}>
+			<button className="profile-nav-button" aria-label="Menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+				<Menu />
+			</button>
+
+			{menuOpen && (
+				<div className="menu-popup">
+					<button className="menu-item menu-item-danger" onClick={() => handleLogOut()}>
+						Log Out
+					</button>
+				</div>
+			)}
+		</div>
+
 
 	   <button className="profile-nav-button" aria-label="Friends">
 	     <Users />

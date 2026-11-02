@@ -34,7 +34,7 @@ function TopBar() {
       </div>
 
       <div className="filter-container">
-        <button className="filter-button">$ Free</button>
+        <button className="filter-button">Free</button>
 
         <button className="filter-button">
           Outdoorsy
@@ -42,6 +42,21 @@ function TopBar() {
 
         <button className="filter-button">
           24HRS
+        </button>
+        <button className="filter-button">
+          Cheap
+        </button>
+        <button className="filter-button">
+          Scenic
+        </button>
+        <button className="filter-button">
+          Short
+        </button>
+        <button className="filter-button">
+          Solo
+        </button>
+        <button className="filter-button">
+          Group
         </button>
       </div>
 

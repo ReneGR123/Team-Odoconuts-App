@@ -16,3 +16,11 @@ export async function logIn(email, password) {
 	}
 	return data; 
 }
+
+//log out user
+export async function logOut() {
+	const { error } = await supabase.auth.signOut();
+	if (error) {
+		throw error; 
+	}
+}
