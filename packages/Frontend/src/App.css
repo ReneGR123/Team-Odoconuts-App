@@ -182,3 +182,36 @@
     border-right-color: var(--border);
   }
 }
+
+.create-quest-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  background: rgb(0 0 0 / 50%);
+}
+
+.create-quest-modal {
+  width: min(700px, 90vw);
+  max-height: 90vh;
+  overflow-y: auto;
+
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+}
+
+.create-quest-backdrop.is-hidden {
+  display: none;
+}
+
+.confirm-location-button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  padding: 12px 18px;
+}

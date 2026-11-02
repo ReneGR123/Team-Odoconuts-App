@@ -10,7 +10,7 @@ import {
 
 import "./SideBar.css";
 
-function SideBar() {
+function SideBar({ onCreateQuest }) {
   return (
     <div className="side-bar">
       <button className="sidebar-button" aria-label="Expand">
@@ -23,7 +23,7 @@ function SideBar() {
         <Compass />
       </button>
 
-      <button className="sidebar-button" aria-label="Add Quest">
+      <button className="sidebar-button" aria-label="Add Quest" onClick={onCreateQuest}>
         <Plus />
       </button>
 

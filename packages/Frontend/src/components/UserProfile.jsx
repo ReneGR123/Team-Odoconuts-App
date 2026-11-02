@@ -1,20 +1,31 @@
 import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
+import QuestCard from "../components/QuestCard";
+import { getMyCreatedQuests } from "../services/questService";
 import { supabase } from "../utils/supabase";
 import { useEffect, useRef, useState } from "react";
 import {logOut} from "../services/authService.js";
 
 
 function UserProfile() {
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+  	const navigate = useNavigate();
+	const [menuOpen, setMenuOpen] = useState(false);
+	const menuRef = useRef(null);
+	const [quests, setQuests] = useState([]);
 
-  {/* temporary quest for logic */}
-  const quests = [ { 
-     id: 1, name: "Bishop Peak" 
-  } ];
+	useEffect(() => {
+		async function loadMyQuests() {
+			try {
+				const data = await getMyCreatedQuests();
+				setQuests(data);
+			} catch (error) {
+				console.error("Could not load your quests:", error.message);
+			}
+		}
+
+		loadMyQuests();
+	}, []);
 
   //closes the menu when clicking outside of it
   useEffect(() => {
@@ -141,11 +152,8 @@ function UserProfile() {
      
      {/* quest grid */}
      <div className="quest-grid">
-	{quests.map((quest) => (
-	   <div className="quest-card" key={quest.id}>
-		{quest.name}
-	   </div> 
-	))}
+		{quests.map((quest) => (
+    	<QuestCard key={quest.id} quest={quest} /> ))}
      </div>
     </div>
   );
