@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Maximize2,
   Compass,
@@ -6,11 +7,12 @@ import {
   Heart,
   BarChart3,
   Navigation
-} from "lucide-react";
-
+} from "lucide-react"; 
+import { FriendsTab } from "./FriendsTab";
 import "./SideBar.css";
 
 function SideBar() {
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   return (
     <div className="side-bar">
       <button className="sidebar-button" aria-label="Expand">
@@ -27,9 +29,18 @@ function SideBar() {
         <Plus />
       </button>
 
-      <button className="sidebar-button" aria-label="Friends">
+      <button
+        className="sidebar-button"
+        aria-label="Friends"
+        onClick={() => setIsOverlayOpen(true)}
+      >
         <Users />
       </button>
+
+      <FriendsTab 
+        isOpen={isOverlayOpen} 
+        onClose={() => setIsOverlayOpen(false)}
+      />
 
       <button className="sidebar-button" aria-label="Favorites">
         <Heart />
