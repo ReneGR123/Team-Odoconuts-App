@@ -74,16 +74,4 @@ router.get("/mine", requireAuth, async (req, res) => {
   res.json(data);
 });
 
-//Future shit when quests get created
-//Quest gets deleted
-// router.delete("/:id", async (req, res) => {
-// });
-
-// //Quest gets reviewed
-// router.patch("/:id/review", async (req, res) => {
-// });
-  
-// //Quest gets completed
-// router.patch("/:id/complete", async (req, res) => {
-// });
 export default router;

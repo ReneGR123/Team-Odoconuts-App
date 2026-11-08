@@ -7,6 +7,7 @@ import healthRouter from "./routes/health.js";
 // import profileRouter from "./routes/profile.js";
 import categoriesRouter from "./routes/categories.js";
 import usersRouter from "./routes/users.js";
+import authRouter from "./routes/auth.js";
 
 const app = express();
 const port = 8000;
@@ -22,6 +23,7 @@ app.use("/api/quests", questsRouter);
 app.use("/api/health", healthRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/auth", authRouter);
 
 
 app.listen(port, () => {
