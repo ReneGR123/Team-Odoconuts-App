@@ -12,7 +12,7 @@ import "./SideBar.css";
 function SideBar({ onCreateQuest }) {
   return (
     <div className="side-bar">
-      <button className="sidebar-button" aria-label="Add Quest" OnClick={onCreateQuest}>
+      <button className="sidebar-button" aria-label="Add Quest" onClick={onCreateQuest}>
         <Plus />
       </button>
 
