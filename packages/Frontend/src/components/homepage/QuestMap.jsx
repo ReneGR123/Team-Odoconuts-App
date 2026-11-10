@@ -5,7 +5,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 // added questimports
 import { useEffect, useState } from "react";
-import { getQuests } from "../services/questService";
+import { getQuests } from "../../services/questService";
 
 // configure the map worker for vite
 setWorkerUrl(workerUrl); 

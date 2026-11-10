@@ -1,11 +1,11 @@
 import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
-import QuestCard from "../components/QuestCard";
-import { getMyCreatedQuests } from "../services/questService";
-import { supabase } from "../utils/supabase";
+import QuestCard from "../quest/QuestCard";
+import { getMyCreatedQuests } from "../../services/questService";
+import { supabase } from "../../utils/supabase";
 import { useEffect, useRef, useState } from "react";
-import {logOut} from "../services/authService.js";
+import {logOut} from "../../services/authService.js";
 
 
 function UserProfile() {

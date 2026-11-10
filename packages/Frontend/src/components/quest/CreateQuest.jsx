@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createQuest } from "../services/questService";
+import { createQuest } from "../../services/questService";
 
 function CreateQuest({ pickedLocation, onChooseLocation }) {
     const [title, setTitle] = useState("");

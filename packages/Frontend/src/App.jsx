@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import QuestMap from "./components/QuestMap.jsx";
-import TopBar from "./components/TopBar";
-import SideBar from "./components/SideBar";
-import SignUp from "./components/SignUp";
+import QuestMap from "./components/homepage/QuestMap.jsx";
+import TopBar from "./components/homepage/TopBar";
+import SideBar from "./components/homepage/SideBar";
+import SignUp from "./components/userauth/SignUp";
 // import { getQuests } from "./services/questService";
-import LogIn from "./components/LogIn";
-import UserProfile from "./components/UserProfile"; 
-import CreateQuest from "./components/CreateQuest.jsx";
+import LogIn from "./components/userauth/LogIn";
+import UserProfile from "./components/userprofile/UserProfile"; 
+import CreateQuest from "./components/quest/CreateQuest.jsx";
 import "./App.css";
 
 // chooses and arranges the current page
