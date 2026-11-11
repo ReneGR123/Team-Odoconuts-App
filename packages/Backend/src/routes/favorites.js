@@ -9,7 +9,7 @@ const router = Router();
 router.get("/", requireAuth, async (req, res) => {
     const { data, error } = await supabase
 	.from("questFavorites")
-	.select("questID")
+	.select(`questID, quest:quests (id, title, description, estTime, location:locations (name, address))`)
 	.eq("userID", req.user.id); 
     
    if (error) {

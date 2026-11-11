@@ -9,7 +9,7 @@ import {
 
 import "./SideBar.css";
 
-function SideBar({ onCreateQuest }) {
+function SideBar({ onCreateQuest, onFavorites }) {
   return (
     <div className="side-bar">
       <button className="sidebar-button" aria-label="Add Quest" onClick={onCreateQuest}>
@@ -26,7 +26,7 @@ function SideBar({ onCreateQuest }) {
         <Users />
       </button>
 
-      <button className="sidebar-button" aria-label="Favorites">
+      <button className="sidebar-button" aria-label="Favorites" onClick={onFavorites}>
         <Heart />
       </button>
 
