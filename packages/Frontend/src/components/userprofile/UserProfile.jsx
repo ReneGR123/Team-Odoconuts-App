@@ -1,4 +1,4 @@
-import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
+import { ArrowLeft, BookOpen, Heart, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 import QuestCard from "../quest/QuestCard";
@@ -135,7 +135,7 @@ function UserProfile() {
 	  </button> 
 
 	  <button className="profile-tab">
-	    <Star />
+	    <Heart />
 	    Favorites
 	  </button> 
 

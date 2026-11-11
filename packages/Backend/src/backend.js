@@ -8,6 +8,8 @@ import healthRouter from "./routes/health.js";
 import categoriesRouter from "./routes/categories.js";
 import usersRouter from "./routes/users.js";
 import authRouter from "./routes/auth.js";
+// import favoriting 
+import favoritesRouter from "./routes/favorites.js"; 
 
 const app = express();
 const port = 8000;
@@ -24,6 +26,7 @@ app.use("/api/health", healthRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/favorites", favoritesRouter); 
 
 
 app.listen(port, () => {
