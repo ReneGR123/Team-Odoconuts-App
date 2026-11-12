@@ -6,6 +6,7 @@ import { getMyCreatedQuests } from "../../services/questService";
 import { supabase } from "../../utils/supabase";
 import { useEffect, useRef, useState } from "react";
 import {logOut} from "../../services/authService.js";
+import { getFavoriteQuests } from "../../services/favoriteService";
 
 
 function UserProfile() {
@@ -13,6 +14,11 @@ function UserProfile() {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const menuRef = useRef(null);
 	const [quests, setQuests] = useState([]);
+	const [activeTab, setActiveTab] = useState("created"); 
+	//favorites state 
+	const [favoriteQuests, setFavoriteQuests] = useState([]);
+
+	console.log("ACTIVE TAB:", activeTab); 
 
 	useEffect(() => {
 		async function loadMyQuests() {
@@ -26,6 +32,21 @@ function UserProfile() {
 
 		loadMyQuests();
 	}, []);
+
+	useEffect(() => {
+           async function loadFavorites() {
+	     if (activeTab !== "favorites") return; 
+
+	     try {
+	       const data = await getFavoriteQuests(); 
+	       setFavoriteQuests(data); 
+	     } catch (error) {
+	       console.error("Could not load favorite quests:", error.message); 
+	     }
+	   }
+	 
+	   loadFavorites(); 
+	}, [activeTab]); 
 
   //closes the menu when clicking outside of it
   useEffect(() => {
@@ -134,12 +155,12 @@ function UserProfile() {
 	    Quest History
 	  </button> 
 
-	  <button className="profile-tab">
+	  <button className="profile-tab" onClick={() => {console.log("FAVORITES PROF CLICKED"); setActiveTab("favorites");}}>
 	    <Heart />
 	    Favorites
 	  </button> 
 
-	  <button className="profile-tab">
+	  <button className="profile-tab" onClick={() => setActiveTab("created")}>
 	    <Pencil />
 	    Quest Created
 	  </button> 
@@ -152,8 +173,12 @@ function UserProfile() {
      
      {/* quest grid */}
      <div className="quest-grid">
-		{quests.map((quest) => (
+		{activeTab === "created" && quests.map((quest) => (
     	<QuestCard key={quest.id} quest={quest} /> ))}
+
+	{activeTab === "favorites" && favoriteQuests.map((favorite) => (
+	   <QuestCard key={favorite.questID} quest={favorite.quest} />
+	))}
      </div>
     </div>
   );
