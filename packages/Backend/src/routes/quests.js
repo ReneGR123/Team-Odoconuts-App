@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", async (req, res) => {
 const { data, error } = await supabase
         .from("quests")
-        .select("*, location:locations(*)");
+        .select(`*, location:locations(*), photos:questPhotos(id, storagePath)`);
 
     if (error) {
         console.error("Error getting quests:", error);

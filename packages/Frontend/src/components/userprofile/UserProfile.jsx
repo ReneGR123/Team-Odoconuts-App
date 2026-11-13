@@ -7,6 +7,7 @@ import { supabase } from "../../utils/supabase";
 import { useEffect, useRef, useState } from "react";
 import {logOut} from "../../services/authService.js";
 import { getFavoriteQuests } from "../../services/favoriteService";
+import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
 
 
 function UserProfile() {
@@ -17,6 +18,8 @@ function UserProfile() {
 	const [activeTab, setActiveTab] = useState("created"); 
 	//favorites state 
 	const [favoriteQuests, setFavoriteQuests] = useState([]);
+	//profile photo
+	const [profilePicture, setProfilePicture] = useState(null); 
 
 	console.log("ACTIVE TAB:", activeTab); 
 
@@ -33,6 +36,40 @@ function UserProfile() {
 		loadMyQuests();
 	}, []);
 
+	 useEffect(() => {
+  async function loadProfile() {
+    try {
+      const user = await getMyProfile();
+
+      console.log("LOADED PROFILE:", user);
+      console.log("PROFILE PIC:", user.profile_pic);
+
+      if (user.profile_pic) {
+        setProfilePicture(user.profile_pic);
+      }
+    } catch (error) {
+      console.error("Could not load profile:", error.message);
+    }
+  }
+
+  loadProfile();
+}, []); 
+
+	 useEffect(() => {
+    async function loadMyQuests() {
+      try {
+        const data = await getMyCreatedQuests();
+        setQuests(data);
+      } catch (error) {
+        console.error("Could not load your quests:", error.message);
+      }
+    }
+
+    loadMyQuests();
+  }, []);
+
+
+
 	useEffect(() => {
            async function loadFavorites() {
 	     if (activeTab !== "favorites") return; 
@@ -46,7 +83,9 @@ function UserProfile() {
 	   }
 	 
 	   loadFavorites(); 
-	}, [activeTab]); 
+	}, [activeTab]);
+
+	 
 
   //closes the menu when clicking outside of it
   useEffect(() => {
@@ -76,6 +115,32 @@ function UserProfile() {
 	
 	setMenuOpen(false);
 	navigate("/");
+  }
+  
+  async function handleProfilePictureChange(event) {
+    const photo = event.target.files[0]; 
+
+    if (!photo) return; 
+   
+    try {
+	const {
+	     data: { user }, 
+	} = await supabase.auth.getUser(); 
+
+	if (!user) {
+	   console.error("No logged in user."); 
+	   return; 
+	}
+
+	const storagePath = await uploadProfilePicture(user.id, photo); 
+	console.log("Profile picture uploaded:", storagePath); 
+	const updatedUser = await saveProfilePicture(storagePath); 
+	console.log("Profile picture saved:", updatedUser); 
+
+	setProfilePicture(storagePath); 
+    } catch (error) {
+	console.error("Could not update profile picture:", error.message); 
+    }
   }
 
   return (
@@ -125,7 +190,24 @@ function UserProfile() {
 
       {/*user pfp, name, and individual stats */}
       <section className="profile-header">
-        <div className="profile-picture"></div>
+        <label className="profile-picture">
+	  <input
+	     type="file"
+	     accept="image/*"
+	     onChange={handleProfilePictureChange}
+	     hidden
+	  />
+
+	  {profilePicture ? (
+	    <img 
+	       src={getProfilePictureUrl(profilePicture)}
+	       alt="Profile"
+	       className="profile-picture-image"
+	    /> 
+	  ) : (
+	      "Add Photo"
+	  )} 
+	</label> 
 
         <div className="profile-info">
           <h1>Username</h1>

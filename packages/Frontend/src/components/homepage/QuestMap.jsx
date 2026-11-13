@@ -1,8 +1,9 @@
-import Map, { Marker, Popup} from "react-map-gl/maplibre"; 
+import Map, { Marker, Popup} from "react-map-gl/maplibre";
+import "./QuestMap.css"; 
 import { setWorkerUrl } from "maplibre-gl"; 
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Heart } from "lucide-react"; 
+import { Heart } from "lucide-react";
 
 // added questimports
 import { useEffect, useState } from "react";
@@ -10,6 +11,9 @@ import { getQuests } from "../../services/questService";
 
 //favorite imports
 import { favoriteQuest, unfavoriteQuest, getFavoriteQuests } from "../../services/favoriteService";
+
+//photos imports  
+import { getQuestPhotoUrl } from "../../services/photoService"; 
 
 // configure the map worker for vite
 setWorkerUrl(workerUrl); 
@@ -105,6 +109,13 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
 			  <button type="button" className="favorite-button" aria-label="Favorite quest" onClick={handleFavorite}> 
 			     <Heart fill={favoriteQuestIDs.includes(selectedQuest.id) ? "currentColor" : "none"} />
 			  </button>
+				{selectedQuest.photos?.length > 0 && (
+					<img 
+					   src={getQuestPhotoUrl(selectedQuest.photos[0].storagePath)}
+					   alt={selectedQuest.title}
+					   className="quest-photo"
+					/>
+				)}
 
                                 <h2>{selectedQuest.title}</h2>
                                 <p>{selectedQuest.description}</p>
