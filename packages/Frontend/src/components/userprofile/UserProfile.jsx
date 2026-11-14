@@ -263,10 +263,16 @@ function UserProfile() {
      {/* quest grid */}
      <div className="quest-grid">
 		{activeTab === "created" && quests.map((quest) => (
-    	<QuestCard key={quest.id} quest={quest} /> ))}
+    	<QuestCard key={quest.id} quest={quest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
 
 	{activeTab === "favorites" && favoriteQuests.map((favorite) => (
-	   <QuestCard key={favorite.questID} quest={favorite.quest} />
+	   <QuestCard key={favorite.questID} quest={favorite.quest} initiallyFavorited={true} onFavoriteChange={(questID, isFavorited) => {
+		   if (!isFavorited) {
+		       setFavoriteQuests((currentFavorites) => currentFavorites.filter((favorite) => favorite.questID !== questID)
+		       );
+		   }
+	   }}
+	/>
 	))}
      </div>
     </div>

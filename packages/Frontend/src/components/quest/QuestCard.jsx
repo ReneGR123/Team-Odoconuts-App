@@ -1,8 +1,28 @@
+import { useState } from "react"; 
 import { Heart } from "lucide-react";
-import { getQuestPhotoUrl } from "../../services/photoService"; 
+import { getQuestPhotoUrl } from "../../services/photoService";
+import { favoriteQuest, unfavoriteQuest, } from "../../services/favoriteService"; 
 
-function QuestCard({ quest }) {
+
+function QuestCard({ quest, initiallyFavorited = false, onFavoriteChange}) {
+  const [isFavorited, setIsFavorited] = useState(initiallyFavorited); 
   const photoUrl = quest.photos?.length > 0 ? getQuestPhotoUrl(quest.photos[0].storagePath) : null; 
+
+  async function handleFavoriteClick() {
+    try {
+      if (isFavorited) {
+	 await unfavoriteQuest(quest.id); 
+	 setIsFavorited(false); 
+	 onFavoriteChange?.(quest.id, false); 
+      } else {
+	 await favoriteQuest(quest.id); 
+	 setIsFavorited(true); 
+	 onFavoriteChange?.(quest.id, true); 
+      } 
+    } catch (error) {
+	 console.error("Error updating favorite:", error); 
+    }
+  }
 
   return (
     <article className="quest-card">
@@ -14,8 +34,9 @@ function QuestCard({ quest }) {
 	  />
   )}
 
-      <button className="favorite-button" aria-label="Favorite quest">
-	  <Heart />
+      <button className="favorite-button" aria-label={isFavorited ? "Unfavorite quest" : "Favorite quest"}
+	  onClick={handleFavoriteClick} >
+	  <Heart fill={isFavorited ? "currentColor" : "none"} />
       </button>
 
     <div className="quest-card-details"> 

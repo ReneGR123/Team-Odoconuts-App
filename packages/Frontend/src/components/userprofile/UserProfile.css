@@ -358,23 +358,27 @@
   margin: 4px 0;
 }
 
-.favorite-button {
+.quest-card .favorite-button {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
 
-  z-index: 2;
-
-  background: white;
+  background: transparent;
   border: none;
-  border-radius: 50%;
+  padding: 0;
 
-  width: 40px;
-  height: 40px;
+  color: white;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   cursor: pointer;
+  z-index: 3;
 }
+
+.quest-card .favorite-button svg {
+  width: 30px; 
+  height: 30px; 
+  stroke-width: 2.5; 
+} 
