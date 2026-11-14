@@ -4,6 +4,7 @@ import { setWorkerUrl } from "maplibre-gl";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Heart } from "lucide-react";
+import { completeQuest } from "../../services/questCompleteService"; 
 
 // added questimports
 import { useEffect, useState } from "react";
@@ -44,6 +45,18 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
 	   } catch (error) {
 	       console.error("Could not update favorite:", error.message); 
 	   }
+	}
+
+	async function handleCompleteQuest() {
+	  if (!selectedQuest) return; 
+	    
+	  try {
+	     const completedQuest = await completeQuest(selectedQuest.id); 
+
+	     console.log("Quest completed!!", completedQuest); 
+	  } catch (error) {
+	     console.error("Could not complete quest:", error.message); 
+	  }
 	}
 
         useEffect(() => {
@@ -122,6 +135,14 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                                 {/* <p>⭐ {selectedQuest.rating}</p> */}
                                 <p>⏱ {selectedQuest.estTime} minutes</p>
                                 <p>{selectedQuest.location.address}</p>
+
+			    <button 
+			       type="button"
+			       className="complete-quest-button"
+			       onClick={handleCompleteQuest}
+			    > 
+			       Complete Quest 
+			    </button> 
                         </Popup>
                 )}
                 </Map>

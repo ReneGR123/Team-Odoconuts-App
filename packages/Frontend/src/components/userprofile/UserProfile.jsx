@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import {logOut} from "../../services/authService.js";
 import { getFavoriteQuests } from "../../services/favoriteService";
 import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
+import { getCompletedQuests } from "../../services/questCompleteService";
+import slapLogo from "../../assets/SLAP_logo.png"; 
 
 
 function UserProfile() {
@@ -20,6 +22,9 @@ function UserProfile() {
 	const [favoriteQuests, setFavoriteQuests] = useState([]);
 	//profile photo
 	const [profilePicture, setProfilePicture] = useState(null); 
+	//username, quest completed, and hours questing
+	const [profile, setProfile] = useState(null);
+	const [completedQuests, setCompletedQuests] = useState([]); 
 
 	console.log("ACTIVE TAB:", activeTab); 
 
@@ -41,8 +46,7 @@ function UserProfile() {
     try {
       const user = await getMyProfile();
 
-      console.log("LOADED PROFILE:", user);
-      console.log("PROFILE PIC:", user.profile_pic);
+      setProfile(user); 
 
       if (user.profile_pic) {
         setProfilePicture(user.profile_pic);
@@ -55,19 +59,18 @@ function UserProfile() {
   loadProfile();
 }, []); 
 
-	 useEffect(() => {
-    async function loadMyQuests() {
-      try {
-        const data = await getMyCreatedQuests();
-        setQuests(data);
-      } catch (error) {
-        console.error("Could not load your quests:", error.message);
-      }
-    }
+	useEffect(() => {
+	   async function loadCompletedQuests() {
+	      try {
+		 const data = await getCompletedQuests(); 
+		 setCompletedQuests(data); 
+	      } catch (error) {
+		 console.error("Could not load completed quests:", error.message); 
+	      }
+	   }
 
-    loadMyQuests();
-  }, []);
-
+	   loadCompletedQuests(); 
+	}, []); 
 
 
 	useEffect(() => {
@@ -149,7 +152,7 @@ function UserProfile() {
 	  {/* right side of user profile */}
 	<div className="profile-side-nav">
 	 <button className="profile-slap-logo" onClick={() => navigate("/")} >
-	  SLAP
+	  <img src={slapLogo} alt="SLAP" /> 
 	  </button>
 
 	<div className="profile-nav-buttons">
@@ -210,22 +213,26 @@ function UserProfile() {
 	</label> 
 
         <div className="profile-info">
-          <h1>Username</h1>
+          <h1>{profile?.username || "Username"}</h1>
 
           <div className="profile-stats">
             <div>
-              <p>Quests Taken:</p>
-              <strong>0</strong>
+              <p>Quests Pioneered:</p>
+              <strong>{completedQuests.length}</strong>
             </div>
 
             <div>
-              <p>Quests Pioneered:</p>
-              <strong>0</strong>
+              <p>Quests Created:</p>
+              <strong>{quests.length}</strong>
             </div>
 
             <div>
               <p>Hours Questing:</p>
-              <strong>0</strong>
+              <strong>
+	        {( 
+		   completedQuests.reduce(
+		      (total, completed) => total + (completed.quest?.estTime || 0), 0 ) / 60 ).toFixed(1)}
+	      </strong>
             </div>
           </div>
         </div>

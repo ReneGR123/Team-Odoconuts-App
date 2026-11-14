@@ -63,7 +63,7 @@ router.post("/", requireAuth , async (req, res) => {
 router.get("/mine", requireAuth, async (req, res) => {
   const { data, error } = await supabase
     .from("quests")
-    .select("*, location:locations(*)")
+    .select(`*, location:locations(*), photos:questPhotos(id, storagePath)`)
     .eq("creatorID", req.user.id);
 
   if (error) {
