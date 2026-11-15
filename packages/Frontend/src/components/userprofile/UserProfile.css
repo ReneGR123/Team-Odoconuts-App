@@ -308,7 +308,7 @@
   border-radius: 20px; 
   overflow: hidden; 
 
-  flex shrink: 0; 
+  flex-shrink: 0; 
 } 
 
 .quest-card-image {
