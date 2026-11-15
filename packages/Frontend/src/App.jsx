@@ -1,93 +1,23 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import QuestMap from "./components/homepage/QuestMap.jsx";
-import TopBar from "./components/homepage/TopBar";
-import SideBar from "./components/homepage/SideBar";
+
+import HomePage from "./components/homepage/HomePage";
 import SignUp from "./components/userauth/SignUp";
-// import { getQuests } from "./services/questService";
 import LogIn from "./components/userauth/LogIn";
-import UserProfile from "./components/userprofile/UserProfile"; 
-import CreateQuest from "./components/quest/CreateQuest.jsx";
+import UserProfile from "./components/userprofile/UserProfile";
+
 import "./App.css";
-import FavoritesPanel from "./components/favorites/FavoritesPanel";
 
-// chooses and arranges the current page
 function App() {
-	const [isCreateQuestOpen, setIsCreateQuestOpen] = useState(false);
-	const [isPickingLocation, setIsPickingLocation] = useState(false);
-	const [pickedLocation, setPickedLocation] = useState(null);
-	const [isFavoritesOpen, setIsFavoritesOpen] = useState(false); 
-
-
-	return (
-	  <BrowserRouter> 
-	     <Routes>
-		<Route
-		  path="/"
-		  element={
-		    <div className="home-page">
-			<QuestMap 
-				isPickingLocation={isPickingLocation}
-  				pickedLocation={pickedLocation}
-  				onPickLocation={setPickedLocation}
-			/>
-			<TopBar />
-			<SideBar 
-				onCreateQuest={() =>{setIsCreateQuestOpen(true); setIsPickingLocation(false);}}
-			        onFavorites={() => {console.log("FAVORITES CLICKED"); 
-					setIsFavoritesOpen(true)}}
-			/>
-
-			<FavoritesPanel 
-			       isOpen={isFavoritesOpen}
-			       onClose={() => setIsFavoritesOpen(false)}
-			/>
-
-			{isCreateQuestOpen && (
-				<div
-					className={`create-quest-backdrop ${ isPickingLocation ? "is-hidden" : ""}` }
-					onClick={() => {setIsCreateQuestOpen(false); setIsPickingLocation(false) }}
-				>
-					<div
-						className="create-quest-modal"
-						onClick={(event) => event.stopPropagation()}
-					>
-						<button
-							type="button"
-							onClick={() => {setIsCreateQuestOpen(false); setIsPickingLocation(false);}}
-						>
-							×
-						</button>
-
-						<CreateQuest 
-							pickedLocation={pickedLocation}
-							onChooseLocation={() => setIsPickingLocation(true)}
-						/>
-					</div>
-				</div>
-			)}
-
-			{isPickingLocation && (
-  						<button
-    						className="confirm-location-button"
-    						type="button"
-    						disabled={!pickedLocation}
-    						onClick={() =>  setIsPickingLocation(false)}
-  						>
-    						Confirm location
-  						</button>
-			)}
-
-		</div>
-	}
-	/>
-
-		<Route path="/signup" element={<SignUp />} />
-		<Route path="/profile" element={<UserProfile />} />
-    <Route path="/login" element={<LogIn />} />
-	      </Routes>
-	   </BrowserRouter>
-	);
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/profile" element={<UserProfile />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App; 
+export default App;
