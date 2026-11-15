@@ -2,14 +2,14 @@ import { ArrowLeft, BookOpen, Heart, Pencil, Footprints, Users, BarChart3, Plus,
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 import QuestCard from "../quest/QuestCard";
-import { getMyCreatedQuests } from "../../services/questService";
+import { getMyCreatedQuests, updateQuest } from "../../services/questService";
 import { supabase } from "../../utils/supabase";
 import { useEffect, useRef, useState } from "react";
 import {logOut} from "../../services/authService.js";
 import { getFavoriteQuests } from "../../services/favoriteService";
 import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
 import { getCompletedQuests } from "../../services/questCompleteService";
-import slapLogo from "../../assets/SLAP_logo.png"; 
+import slapLogo from "../../assets/SLAP_logo.png";
 
 
 function UserProfile() {
@@ -25,6 +25,8 @@ function UserProfile() {
 	//username, quest completed, and hours questing
 	const [profile, setProfile] = useState(null);
 	const [completedQuests, setCompletedQuests] = useState([]); 
+	//editing a quest
+	const [editingQuest, setEditingQuest] = useState(null); 
 
 	console.log("ACTIVE TAB:", activeTab); 
 
@@ -146,6 +148,30 @@ function UserProfile() {
     }
   }
 
+  async function handleSaveQuest(event) {
+     event.preventDefault(); 
+
+     try {
+       const updatedQuest = await updateQuest(editingQuest.id, {
+	   title: editingQuest.title, 
+	   description: editingQuest.description, 
+	   estTime: editingQuest.estTime,
+	   locationName: editingQuest.location?.name, 
+	   address: editingQuest.location?.address, 
+	   latitude: editingQuest.location?.latitude, 
+	   longitude: editingQuest.location?.longitude,
+       }); 
+
+       setQuests((currentQuests) => currentQuests.map((quest) => 
+	  quest.id === updatedQuest.id ? updatedQuest : quest)
+       );
+
+       setEditingQuest(null); 
+     } catch (error) {
+	  console.error("Could not update quest:", error.message); 
+     }
+  }
+
   return (
     <div className="profile-page">
 	
@@ -263,7 +289,7 @@ function UserProfile() {
      {/* quest grid */}
      <div className="quest-grid">
 		{activeTab === "created" && quests.map((quest) => (
-    	<QuestCard key={quest.id} quest={quest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
+    	<QuestCard key={quest.id} quest={quest} editable={true} onEdit={setEditingQuest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
 
 	{activeTab === "favorites" && favoriteQuests.map((favorite) => (
 	   <QuestCard key={favorite.questID} quest={favorite.quest} initiallyFavorited={true} onFavoriteChange={(questID, isFavorited) => {
@@ -275,6 +301,103 @@ function UserProfile() {
 	/>
 	))}
      </div>
+	
+       {editingQuest && (
+  <div className="edit-quest-overlay">
+    <form className="edit-quest-form" onSubmit={handleSaveQuest}>
+      <h2>Edit Quest</h2>
+
+      <label>
+        Quest Title
+        <input
+          type="text"
+          value={editingQuest.title}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              title: event.target.value,
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Description
+        <textarea
+          value={editingQuest.description}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              description: event.target.value,
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Estimated Time
+        <input
+          type="number"
+          value={editingQuest.estTime}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              estTime: Number(event.target.value),
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Location
+        <input
+          type="text"
+          value={editingQuest.location?.name || ""}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              location: {
+                ...editingQuest.location,
+                name: event.target.value,
+              },
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Address
+        <input
+          type="text"
+          value={editingQuest.location?.address || ""}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              location: {
+                ...editingQuest.location,
+                address: event.target.value,
+              },
+            })
+          }
+        />
+      </label>
+
+      <div className="edit-quest-actions">
+        <button type="submit">
+          Save Changes
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setEditingQuest(null)}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+       )}
+   
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useState } from "react"; 
-import { Heart } from "lucide-react";
+import { Heart, Pencil } from "lucide-react";
 import { getQuestPhotoUrl } from "../../services/photoService";
 import { favoriteQuest, unfavoriteQuest, } from "../../services/favoriteService"; 
 
 
-function QuestCard({ quest, initiallyFavorited = false, onFavoriteChange}) {
+function QuestCard({ quest, initiallyFavorited = false, onFavoriteChange, editable = false, onEdit,}) {
   const [isFavorited, setIsFavorited] = useState(initiallyFavorited); 
   const photoUrl = quest.photos?.length > 0 ? getQuestPhotoUrl(quest.photos[0].storagePath) : null; 
 
@@ -39,12 +39,18 @@ function QuestCard({ quest, initiallyFavorited = false, onFavoriteChange}) {
 	  <Heart fill={isFavorited ? "currentColor" : "none"} />
       </button>
 
+      {editable && (
+	  <button type="button" className="edit-quest-button" aria-label="Edit quest" onClick={() => onEdit?.(quest)}> 
+	      <Pencil />
+	  </button>
+      )}
+
     <div className="quest-card-details"> 
       <h2>{quest.title}</h2>
       <p>{quest.description}</p>
       <p>⭐ {quest.rating}</p>
       <p>⏱ {quest.estTime} min</p>
-      <p>📍 {quest.location?.name}</p>
+      <p>📍 {quest.location?.name}</p> 
     </div>
     </article>
   );
