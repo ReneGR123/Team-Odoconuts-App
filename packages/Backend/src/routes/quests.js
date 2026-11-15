@@ -141,4 +141,54 @@ router.patch("/:questID", requireAuth, async (req, res) => {
   return res.json(updatedQuest);
 });
 
+// delete a quest that belongs to the authenticated user
+router.delete("/:questID", requireAuth, async (req, res) => {
+  const { questID } = req.params;
+
+  // Find the quest and make sure its made by authenticated user 
+  const { data: existingQuest, error: findError } = await supabase
+    .from("quests")
+    .select("id, creatorID, locationID")
+    .eq("id", questID)
+    .eq("creatorID", req.user.id)
+    .single();
+
+  if (findError || !existingQuest) {
+    return res.status(404).json({
+      error: "Quest not found or you do not have permission to delete it.",
+    });
+  }
+
+  const { error: photoDeleteError } = await supabase
+     .from("questPhotos")
+     .delete()
+     .eq("questID", questID); 
+
+  if (photoDeleteError) {
+     console.error("Error deleting quest photos:", photoDeleteError); 
+     return res.status(500).json({
+	error: "Could not delete quest photos.", 
+     }); 
+  }
+
+  // Delete the quest
+  const { error: deleteError } = await supabase
+    .from("quests")
+    .delete()
+    .eq("id", questID)
+    .eq("creatorID", req.user.id);
+
+  if (deleteError) {
+    console.error("Error deleting quest:", deleteError);
+    return res.status(500).json({
+      error: "Could not delete quest.",
+    });
+  }
+
+  return res.json({
+    message: "Quest deleted successfully.",
+    questID,
+  });
+});
+
 export default router;

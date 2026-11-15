@@ -2,7 +2,7 @@ import { ArrowLeft, BookOpen, Heart, Pencil, Footprints, Users, BarChart3, Plus,
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 import QuestCard from "../quest/QuestCard";
-import { getMyCreatedQuests, updateQuest } from "../../services/questService";
+import { getMyCreatedQuests, updateQuest, deleteQuest } from "../../services/questService";
 import { supabase } from "../../utils/supabase";
 import { useEffect, useRef, useState } from "react";
 import {logOut} from "../../services/authService.js";
@@ -172,6 +172,21 @@ function UserProfile() {
      }
   }
 
+  async function handleDeleteQuest(quest) {
+    const confirmed = window.confirm(`Are you sure you want to delete "${quest.title}"?`);
+
+    if (!confirmed) return;
+
+    try {
+       await deleteQuest(quest.id);
+
+       setQuests((currentQuests) =>
+          currentQuests.filter((currentQuest) => currentQuest.id !== quest.id));
+    } catch (error) {
+       console.error("Could not delete quest:", error.message);
+   }
+}
+
   return (
     <div className="profile-page">
 	
@@ -289,7 +304,7 @@ function UserProfile() {
      {/* quest grid */}
      <div className="quest-grid">
 		{activeTab === "created" && quests.map((quest) => (
-    	<QuestCard key={quest.id} quest={quest} editable={true} onEdit={setEditingQuest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
+    	<QuestCard key={quest.id} quest={quest} editable={true} onEdit={setEditingQuest} onDelete={handleDeleteQuest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
 
 	{activeTab === "favorites" && favoriteQuests.map((favorite) => (
 	   <QuestCard key={favorite.questID} quest={favorite.quest} initiallyFavorited={true} onFavoriteChange={(questID, isFavorited) => {

@@ -407,3 +407,27 @@
   height: 28px;
   stroke-width: 2.5;
 }
+
+.quest-card .delete-quest-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 3;
+}
+
+.quest-card .delete-quest-button svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+}

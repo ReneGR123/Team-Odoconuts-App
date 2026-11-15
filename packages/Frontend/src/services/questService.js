@@ -91,6 +91,12 @@ export async function updateQuest(questID, quest) {
   }); 
 }
 
+export async function deleteQuest(questID) {
+  return apiRequest(`/quests/${questID}`, {
+     method: "DELETE", 
+  }); 
+}
+
 // export async function getMyCreatedQuests() {
 //   const {
 //     data: { user },
