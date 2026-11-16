@@ -10,6 +10,7 @@ import { getFavoriteQuests } from "../../services/favoriteService";
 import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
 import { getCompletedQuests } from "../../services/questCompleteService";
 import slapLogo from "../../assets/SLAP_logo.png";
+import { getPlannedQuests } from "../../services/plannedService"; 
 
 
 function UserProfile() {
@@ -26,7 +27,9 @@ function UserProfile() {
 	const [profile, setProfile] = useState(null);
 	const [completedQuests, setCompletedQuests] = useState([]); 
 	//editing a quest
-	const [editingQuest, setEditingQuest] = useState(null); 
+	const [editingQuest, setEditingQuest] = useState(null);
+	//planned quest state
+	const [plannedQuests, setPlannedQuests] = useState([]); 
 
 	console.log("ACTIVE TAB:", activeTab); 
 
@@ -60,6 +63,21 @@ function UserProfile() {
 
   loadProfile();
 }, []); 
+
+	useEffect(() => {
+	   async function loadPlannedQuests() {
+	      if (activeTab !== "planned") return; 
+
+	      try {
+		 const data = await getPlannedQuests(); 
+		 setPlannedQuests(data); 
+	      } catch (error) {
+		 console.error("Could not load planned quests:", error.message); 
+	      }
+	   }
+
+	   loadPlannedQuests(); 
+	}, [activeTab]); 
 
 	useEffect(() => {
 	   async function loadCompletedQuests() {
@@ -295,7 +313,7 @@ function UserProfile() {
 	    Quest Created
 	  </button> 
 
-	  <button className="profile-tab">
+	  <button className="profile-tab" onClick={() => setActiveTab("planned")}>
 	    <Footprints />
 	    Planned
 	  </button>
@@ -315,6 +333,11 @@ function UserProfile() {
 	   }}
 	/>
 	))}
+	
+       {activeTab === "planned" && plannedQuests.map((planned) => (
+	   <QuestCard key={planned.questID} quest={planned.quest}
+	     />
+       ))}
      </div>
 	
        {editingQuest && (
