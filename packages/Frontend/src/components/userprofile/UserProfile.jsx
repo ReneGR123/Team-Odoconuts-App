@@ -298,7 +298,7 @@ function UserProfile() {
       </section>
         
 	<div className="profile-tabs">
-	  <button className="profile-tab" onClick=() => setActiveTab("history")}> 
+	  <button className="profile-tab" onClick={() => setActiveTab("history")}> 
 	    <BookOpen />
 	    Quest History
 	  </button> 
