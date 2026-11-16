@@ -41,7 +41,7 @@ function LogIn() {
     <div className= "signlog-field">
       <label htmlFor="email-field">Email</label>
       <input
-	      type="text"
+	      type="email"
         id="email-field"
         name="email"
         autoComplete="email"
