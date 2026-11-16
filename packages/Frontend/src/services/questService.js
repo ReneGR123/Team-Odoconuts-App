@@ -84,6 +84,19 @@ export async function getMyCreatedQuests(){
   return apiRequest("/quests/mine");
 }
 
+export async function updateQuest(questID, quest) {
+  return apiRequest(`/quests/${questID}`, {
+     method: "PATCH", 
+     body: JSON.stringify(quest), 
+  }); 
+}
+
+export async function deleteQuest(questID) {
+  return apiRequest(`/quests/${questID}`, {
+     method: "DELETE", 
+  }); 
+}
+
 // export async function getMyCreatedQuests() {
 //   const {
 //     data: { user },

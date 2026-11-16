@@ -1,7 +1,10 @@
 import Map, { Marker, Popup, Source, Layer} from "react-map-gl/maplibre";
+import "./QuestMap.css"
 import { setWorkerUrl } from "maplibre-gl";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { Heart } from "lucide-react";
+import { completeQuest } from "../../services/questCompleteService";
 
 // added questimports
 import { useEffect, useRef, useState } from "react";
@@ -9,10 +12,18 @@ import { getQuests } from "../../services/questService";
 import { getTerritories } from "../../services/territoryService";
 import RegionOverlay from "./RegionOverlay";
 
+//favorite imports
+import { favoriteQuest, unfavoriteQuest, getFavoriteQuests } from "../../services/favoriteService";
+
+//photos imports  
+import { getQuestPhotoUrl } from "../../services/photoService";
+import { planQuest, unplanQuest, getPlannedQuests, } from "../../services/plannedService"; 
+
+
 // configure the map worker for vite
 setWorkerUrl(workerUrl);
 
-function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
+function QuestMap({isPickingLocation, pickedLocation, onPickLocation, searchQuery, onSearchResults, searchedQuest, }) {
 
         // lets us move the map from code (flyTo)
         const mapRef = useRef(null);
@@ -33,11 +44,6 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                 features: features,
         };
 
-        // only the quests in the filtered territory (or all of them if no filter)
-        const visibleQuests = regionFilter
-                ? quests.filter((quest) => quest.territoryID === regionFilter)
-                : quests;
-
         // name of the filtered territory, for the overlay header
         const filteredRegionName = territories.find((territory) => territory.id === regionFilter)?.name;
 
@@ -55,6 +61,69 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                         duration: 800,
                 });
         }
+	const [favoriteQuestIDs, setFavoriteQuestIDs] = useState([]); 
+	const [plannedQuestIDs, setPlannedQuestIDs] = useState([]); 
+
+	async function handleFavorite() {
+	   if (!selectedQuest) return; 
+	
+	   const questID = selectedQuest.id; 
+	   const isFavorited = favoriteQuestIDs.includes(questID); 
+	   
+	   try {
+	      if (isFavorited) {
+	         await unfavoriteQuest(questID); 
+
+		 setFavoriteQuestIDs(favoriteQuestIDs.filter((id) => id !==  questID)); 
+		 console.log("Quest unfavorited");
+	      } else {
+		 await favoriteQuest(questID);
+		 setFavoriteQuestIDs([...favoriteQuestIDs, questID]); 
+		 console.log("Quest favorited"); 
+	      }
+	   } catch (error) {
+	       console.error("Could not update favorite:", error.message); 
+	   }
+	}
+
+	async function handleCompleteQuest() {
+	  if (!selectedQuest) return; 
+	    
+	  try {
+	     const completedQuest = await completeQuest(selectedQuest.id); 
+
+	     console.log("Quest completed!!", completedQuest); 
+	  } catch (error) {
+	     console.error("Could not complete quest:", error.message); 
+	  }
+	}
+
+	async function handlePlanQuest() {
+	   if (!selectedQuest) return;
+	  
+	   const questID = selectedQuest.id;
+           const isPlanned = plannedQuestIDs.includes(questID);
+
+           try {
+             if (isPlanned) {
+                 await unplanQuest(questID);
+
+                 setPlannedQuestIDs(
+                    plannedQuestIDs.filter((id) => id !== questID),
+                 );
+
+                 console.log("Quest removed from planned");
+              } else {
+                 await planQuest(questID);
+
+                 setPlannedQuestIDs([...plannedQuestIDs, questID]);
+
+                 console.log("Quest planned!");
+              }
+             } catch (error) {
+                 console.error("Could not update planned quest:", error.message);
+           }
+          }
 
         useEffect(() => {
                 async function loadQuests() {
@@ -66,7 +135,27 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                         }
                 }
 
+		async function loadFavorites() {
+		    try {
+		      const data = await getFavoriteQuests(); 
+		      setFavoriteQuestIDs(data.map((favorite) => favorite.questID));
+		    } catch (error) {
+		      console.error("Could not load favorites:", error.message); 
+		    }
+		}
+
+		async function loadPlannedQuests() {
+		   try {
+		      const data = await getPlannedQuests(); 
+		      setPlannedQuestIDs(data.map((planned) => planned.questID)); 
+		   } catch (error) {
+		      console.error("Could not load planned quests:", error.message); 
+		   }
+		}	 
+
                 loadQuests();
+		loadFavorites();
+		loadPlannedQuests(); 
         }, []);
 
         useEffect(() => {
@@ -82,12 +171,52 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                 loadTerritories();
         }, []);
 
+	const filteredQuests = quests.filter((quest) => {
+	  const search = (searchQuery || "").toLowerCase().trim(); 
+
+	  if (!search) {
+	     return true; 
+	  }
+	
+	  return (
+	    quest.title?.toLowerCase().includes(search) ||
+	    quest.description?.toLowerCase().includes(search) ||
+	    quest.location?.name?.toLowerCase().includes(search) ||
+	    quest.location?.address?.toLowerCase().includes(search)
+	  );
+	}); 
+        
+        // only the quests in the filtered territory (or all of them if no filter)
+        const visibleQuests = regionFilter
+                ? quests.filter((quest) => quest.territoryID === regionFilter)
+                : quests;
+
+	useEffect(() => {
+	  onSearchResults(filteredQuests); 
+	}, [searchQuery, quests]); 
+
+	useEffect(() => {
+	  if (!searchedQuest || !mapRef.current) {
+	     return; 
+	  }
+	  
+	  setSelectedQuest(searchedQuest); 
+
+	  mapRef.current.flyTo({
+	     center: [
+		searchedQuest.location.longitude, 
+		searchedQuest.location.latitude,
+	     ], 
+	     zoom: 16, 
+	     duration: 1500, 
+	  });
+	}, [searchedQuest]); 
+
         return (
                 <>
-                <Map ref={mapRef}
-                        initialViewState={{ longitude: -120.6596, latitude: 35.2828, zoom: 14 }}
-                        style={{ width: "100vw", height: "100vh" }}
-                        mapStyle="https://tiles.openfreemap.org/styles/liberty"
+                <Map ref={mapRef} initialViewState={{ longitude: -120.6596, latitude: 35.2828, zoom: 14 }}
+                        style={{ width: "100vw", height: "100vh" }} 
+                        mapStyle="https://tiles.openfreemap.org/styles/liberty" 
                         onClick={(event) => {
                                 if (isPickingLocation) {
                                         onPickLocation({
@@ -124,11 +253,41 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
 
                 {selectedQuest && (
                         <Popup longitude={selectedQuest.location.longitude} latitude={selectedQuest.location.latitude} closeButton={true} closeOnClick={false} onClose={() => setSelectedQuest(null)} >
+
+			  <button type="button" className="favorite-button" aria-label="Favorite quest" onClick={handleFavorite}> 
+			     <Heart fill={favoriteQuestIDs.includes(selectedQuest.id) ? "currentColor" : "none"} />
+			  </button>
+				{selectedQuest.photos?.length > 0 && (
+					<img 
+					   src={getQuestPhotoUrl(selectedQuest.photos[0].storagePath)}
+					   alt={selectedQuest.title}
+					   className="quest-photo"
+					/>
+				)}
+
                                 <h2>{selectedQuest.title}</h2>
                                 <p>{selectedQuest.description}</p>
                                 {/* <p>⭐ {selectedQuest.rating}</p> */}
                                 <p>⏱ {selectedQuest.estTime} minutes</p>
                                 <p>{selectedQuest.location.address}</p>
+
+			   <button 
+			      type="button"
+			      className="plan-quest-button" 
+			      onClick={handlePlanQuest}
+			   >
+			     {plannedQuestIDs.includes(selectedQuest.id)
+				 ? "Remove from Planned"
+				 : "Plan Quest"}
+		           </button> 
+			    
+			    <button 
+			       type="button"
+			       className="complete-quest-button"
+			       onClick={handleCompleteQuest}
+			    > 
+			       Complete Quest 
+			    </button> 
                                 {selectedQuest.territory ? (
                                         <button type="button" onClick={() => handleRegionClick(selectedQuest.territory)}>
                                                 Region: {selectedQuest.territory.name}

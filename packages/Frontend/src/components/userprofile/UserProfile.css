@@ -63,8 +63,16 @@
   background-color: #d9d9d9;
 
   flex-shrink: 0;
+  overflow: hidden; 
+  cursor: pointer;
 }
 
+.profile-picture-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
 
 /* Username */
 .profile-info h1 {
@@ -166,18 +174,23 @@
 
 /* SLAP logo */
 .profile-slap-logo {
-  margin-top: 3px;
+  position: absolute;
+  top: 8px;
+  left: -120px;
+
+  width: 100px;
+  height: auto;
+
   padding: 0;
-  border: none; 
-
+  border: none;
   background: none;
-  color: black;
-
-  font-size: 30px;
-  font-weight: 500;
-  line-height: 1;
-
   cursor: pointer;
+}
+
+.profile-slap-logo img {
+  width: 100%; 
+  height: auto; 
+  display: block;
 }
 
 /* container for side buttons */
@@ -285,11 +298,188 @@
 }
 
 .quest-card {
-  width: 100%; 
-  aspect-ratio: 1 / 1; 
+  position: relative; 
+
+  width: 300px; 
+  height: 300px; 
 
   background-color: #d9d9d9; 
-  border-radius: 6px; 
 
+  border-radius: 20px; 
   overflow: hidden; 
+
+  flex-shrink: 0; 
 } 
+
+.quest-card-image {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover; 
+  object-position: center; 
+
+  display: block; 
+}
+
+.quest-card-details {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  z-index: 1;
+}
+
+.quest-card:hover .quest-card-details {
+  opacity: 1; 
+}
+
+.quest-card-details h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.quest-card-details p {
+  margin: 4px 0;
+}
+
+.quest-card-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.quest-card .favorite-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 3;
+}
+
+.quest-card .favorite-button svg {
+  width: 30px; 
+  height: 30px; 
+  stroke-width: 2.5; 
+}
+
+.quest-card .edit-quest-button {
+  position: absolute;
+  top: 58px;
+  right: 16px;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 3;
+}
+
+.quest-card .edit-quest-button svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+}
+
+.quest-card .delete-quest-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 3;
+}
+
+.quest-card .delete-quest-button svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+}
+
+.description-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.75);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  z-index: 10;
+}
+
+.description-popup {
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+
+  background: white;
+  color: black;
+
+  border-radius: 12px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.description-popup h3 {
+  margin: 0 0 10px;
+}
+
+.description-popup p {
+  margin: 0 0 15px;
+  line-height: 1.4;
+}
+
+.description-popup button {
+  cursor: pointer;
+}

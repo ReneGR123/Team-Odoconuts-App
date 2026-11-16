@@ -1,11 +1,16 @@
-import { ArrowLeft, BookOpen, Star, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
+import { ArrowLeft, BookOpen, Heart, Pencil, Footprints, Users, BarChart3, Plus, Menu } from "lucide-react";
 import "./UserProfile.css";
 import { useNavigate } from "react-router-dom"; 
 import QuestCard from "../quest/QuestCard";
-import { getMyCreatedQuests } from "../../services/questService";
+import { getMyCreatedQuests, updateQuest, deleteQuest } from "../../services/questService";
 import { supabase } from "../../utils/supabase";
 import { useEffect, useRef, useState } from "react";
 import {logOut} from "../../services/authService.js";
+import { getFavoriteQuests } from "../../services/favoriteService";
+import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
+import { getCompletedQuests } from "../../services/questCompleteService";
+import slapLogo from "../../assets/SLAP_logo.png";
+import { getPlannedQuests } from "../../services/plannedService"; 
 
 
 function UserProfile() {
@@ -13,6 +18,20 @@ function UserProfile() {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const menuRef = useRef(null);
 	const [quests, setQuests] = useState([]);
+	const [activeTab, setActiveTab] = useState("created"); 
+	//favorites state 
+	const [favoriteQuests, setFavoriteQuests] = useState([]);
+	//profile photo
+	const [profilePicture, setProfilePicture] = useState(null); 
+	//username, quest completed, and hours questing
+	const [profile, setProfile] = useState(null);
+	const [completedQuests, setCompletedQuests] = useState([]); 
+	//editing a quest
+	const [editingQuest, setEditingQuest] = useState(null);
+	//planned quest state
+	const [plannedQuests, setPlannedQuests] = useState([]); 
+
+	console.log("ACTIVE TAB:", activeTab); 
 
 	useEffect(() => {
 		async function loadMyQuests() {
@@ -26,6 +45,68 @@ function UserProfile() {
 
 		loadMyQuests();
 	}, []);
+
+	 useEffect(() => {
+  async function loadProfile() {
+    try {
+      const user = await getMyProfile();
+
+      setProfile(user); 
+
+      if (user.profile_pic) {
+        setProfilePicture(user.profile_pic);
+      }
+    } catch (error) {
+      console.error("Could not load profile:", error.message);
+    }
+  }
+
+  loadProfile();
+}, []); 
+
+	useEffect(() => {
+           async function loadFavorites() {
+
+	     try {
+	       const data = await getFavoriteQuests();
+	       setFavoriteQuests(data);
+	     } catch (error) {
+	       console.error("Could not load favorite quests:", error.message);
+	     }
+	   }
+
+	   loadFavorites();
+	}, []);
+
+	useEffect(() => {
+	   async function loadPlannedQuests() {
+	      if (activeTab !== "planned") return; 
+
+	      try {
+		 const data = await getPlannedQuests(); 
+		 setPlannedQuests(data); 
+	      } catch (error) {
+		 console.error("Could not load planned quests:", error.message); 
+	      }
+	   }
+
+	   loadPlannedQuests(); 
+	}, [activeTab]); 
+
+	useEffect(() => {
+	   async function loadCompletedQuests() {
+	      try {
+		 const data = await getCompletedQuests(); 
+		 setCompletedQuests(data); 
+	      } catch (error) {
+		 console.error("Could not load completed quests:", error.message); 
+	      }
+	   }
+
+	   loadCompletedQuests(); 
+	}, []); 
+
+	 
 
   //closes the menu when clicking outside of it
   useEffect(() => {
@@ -56,6 +137,71 @@ function UserProfile() {
 	setMenuOpen(false);
 	navigate("/");
   }
+  
+  async function handleProfilePictureChange(event) {
+    const photo = event.target.files[0]; 
+
+    if (!photo) return; 
+   
+    try {
+	const {
+	     data: { user }, 
+	} = await supabase.auth.getUser(); 
+
+	if (!user) {
+	   console.error("No logged in user."); 
+	   return; 
+	}
+
+	const storagePath = await uploadProfilePicture(user.id, photo); 
+	console.log("Profile picture uploaded:", storagePath); 
+	const updatedUser = await saveProfilePicture(storagePath); 
+	console.log("Profile picture saved:", updatedUser); 
+
+	setProfilePicture(storagePath); 
+    } catch (error) {
+	console.error("Could not update profile picture:", error.message); 
+    }
+  }
+
+  async function handleSaveQuest(event) {
+     event.preventDefault(); 
+
+     try {
+       const updatedQuest = await updateQuest(editingQuest.id, {
+	   title: editingQuest.title, 
+	   description: editingQuest.description, 
+	   estTime: editingQuest.estTime,
+	   locationName: editingQuest.location?.name, 
+	   address: editingQuest.location?.address, 
+	   latitude: editingQuest.location?.latitude, 
+	   longitude: editingQuest.location?.longitude,
+       }); 
+
+       setQuests((currentQuests) => currentQuests.map((quest) => 
+	  quest.id === updatedQuest.id ? updatedQuest : quest)
+       );
+
+       setEditingQuest(null); 
+     } catch (error) {
+	  console.error("Could not update quest:", error.message); 
+     }
+  }
+
+  async function handleDeleteQuest(quest) {
+    const confirmed = window.confirm(`Are you sure you want to delete "${quest.title}"?`);
+
+    if (!confirmed) return;
+
+    try {
+       await deleteQuest(quest.id);
+
+       setQuests((currentQuests) =>
+          currentQuests.filter((currentQuest) => currentQuest.id !== quest.id));
+    } catch (error) {
+       console.error("Could not delete quest:", error.message);
+   }
+}
 
   return (
     <div className="profile-page">
@@ -63,7 +209,7 @@ function UserProfile() {
 	  {/* right side of user profile */}
 	<div className="profile-side-nav">
 	 <button className="profile-slap-logo" onClick={() => navigate("/")} >
-	  SLAP
+	  <img src={slapLogo} alt="SLAP" /> 
 	  </button>
 
 	<div className="profile-nav-buttons">
@@ -104,47 +250,68 @@ function UserProfile() {
 
       {/*user pfp, name, and individual stats */}
       <section className="profile-header">
-        <div className="profile-picture"></div>
+        <label className="profile-picture">
+	  <input
+	     type="file"
+	     accept="image/*"
+	     onChange={handleProfilePictureChange}
+	     hidden
+	  />
+
+	  {profilePicture ? (
+	    <img 
+	       src={getProfilePictureUrl(profilePicture)}
+	       alt="Profile"
+	       className="profile-picture-image"
+	    /> 
+	  ) : (
+	      "Add Photo"
+	  )} 
+	</label> 
 
         <div className="profile-info">
-          <h1>Username</h1>
+          <h1>{profile?.username || "Username"}</h1>
 
           <div className="profile-stats">
             <div>
-              <p>Quests Taken:</p>
-              <strong>0</strong>
+              <p>Quests Pioneered:</p>
+              <strong>{completedQuests.length}</strong>
             </div>
 
             <div>
-              <p>Quests Pioneered:</p>
-              <strong>0</strong>
+              <p>Quests Created:</p>
+              <strong>{quests.length}</strong>
             </div>
 
             <div>
               <p>Hours Questing:</p>
-              <strong>0</strong>
+              <strong>
+	        {( 
+		   completedQuests.reduce(
+		      (total, completed) => total + (completed.quest?.estTime || 0), 0 ) / 60 ).toFixed(1)}
+	      </strong>
             </div>
           </div>
         </div>
       </section>
         
 	<div className="profile-tabs">
-	  <button className="profile-tab"> 
+	  <button className="profile-tab" onClick={() => setActiveTab("history")}> 
 	    <BookOpen />
 	    Quest History
 	  </button> 
 
-	  <button className="profile-tab">
-	    <Star />
+	  <button className="profile-tab" onClick={() => {console.log("FAVORITES PROF CLICKED"); setActiveTab("favorites");}}>
+	    <Heart />
 	    Favorites
 	  </button> 
 
-	  <button className="profile-tab">
+	  <button className="profile-tab" onClick={() => setActiveTab("created")}>
 	    <Pencil />
 	    Quest Created
 	  </button> 
 
-	  <button className="profile-tab">
+	  <button className="profile-tab" onClick={() => setActiveTab("planned")}>
 	    <Footprints />
 	    Planned
 	  </button>
@@ -152,9 +319,136 @@ function UserProfile() {
      
      {/* quest grid */}
      <div className="quest-grid">
-		{quests.map((quest) => (
-    	<QuestCard key={quest.id} quest={quest} /> ))}
+		{activeTab === "created" && quests.map((quest) => (
+    	<QuestCard key={quest.id} quest={quest} editable={true} onEdit={setEditingQuest} onDelete={handleDeleteQuest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
+
+	{activeTab === "favorites" && favoriteQuests.map((favorite) => (
+	   <QuestCard key={favorite.questID} 
+		      quest={favorite.quest}
+		      initiallyFavorited={true}
+		      onFavoriteChange={(questID, isFavorited) => {
+			   if (!isFavorited) {
+				  setFavoriteQuests((currentFavorites) => 
+					currentFavorites.filter(
+					   (favorite) => favorite.questID !== questID
+					)
+				  ); 
+			   }
+		      }}
+		/>
+	))}
+
+       {activeTab === "history" && completedQuests.map((completed) => (
+	   <QuestCard key={completed.id} 
+	       quest={completed.quest}
+	       initiallyFavorited={favoriteQuests.some(
+		       (favorite) => favorite.questID === completed.quest.id
+	       )}
+	    />
+       ))}
+	
+       {activeTab === "planned" && plannedQuests.map((planned) => (
+	   <QuestCard key={planned.questID} quest={planned.quest}
+	     />
+       ))}
      </div>
+	
+       {editingQuest && (
+  <div className="edit-quest-overlay">
+    <form className="edit-quest-form" onSubmit={handleSaveQuest}>
+      <h2>Edit Quest</h2>
+
+      <label>
+        Quest Title
+        <input
+          type="text"
+          value={editingQuest.title}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              title: event.target.value,
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Description
+        <textarea
+          value={editingQuest.description}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              description: event.target.value,
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Estimated Time
+        <input
+          type="number"
+          value={editingQuest.estTime}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              estTime: Number(event.target.value),
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Location
+        <input
+          type="text"
+          value={editingQuest.location?.name || ""}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              location: {
+                ...editingQuest.location,
+                name: event.target.value,
+              },
+            })
+          }
+        />
+      </label>
+
+      <label>
+        Address
+        <input
+          type="text"
+          value={editingQuest.location?.address || ""}
+          onChange={(event) =>
+            setEditingQuest({
+              ...editingQuest,
+              location: {
+                ...editingQuest.location,
+                address: event.target.value,
+              },
+            })
+          }
+        />
+      </label>
+
+      <div className="edit-quest-actions">
+        <button type="submit">
+          Save Changes
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setEditingQuest(null)}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+       )}
+   
     </div>
   );
 }
