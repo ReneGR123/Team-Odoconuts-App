@@ -1,6 +1,7 @@
 import {Router} from "express";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { supabase } from "../supabase.js";
+import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
 
 const router = Router();
 
@@ -10,8 +11,8 @@ const router = Router();
 router.get("/", async (req, res) => {
 const { data, error } = await supabase
         .from("quests")
-        .select("*, location:locations(*)");
-
+        .select("*, location:locations(*), territory:territory(id, name)");
+  
     if (error) {
         console.error("Error getting quests:", error);
         return res.status(500).json({ error: "couldn't load quests" });
@@ -20,9 +21,38 @@ const { data, error } = await supabase
   return res.json(data);
 });
 
-//filler for post ing a new quest, not final design as quest does not exist yet
+//create a new quest
 router.post("/", requireAuth , async (req, res) => {
   const {title, description, estTime, locationName, address, latitude, longitude} = req.body ?? {};
+
+
+    const {data : territories, error : territoryError} = await supabase
+    .from("territory")
+    .select("id, boundry");
+
+
+    if (territoryError) {
+        console.error("Error getting territories:", territoryError);
+        return res.status(500).json({ error: "Could not create quest." });
+    }
+    
+    let territoryID = null;
+    const point = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+    };
+
+    for (const territory of territories) {
+      if(!territory.boundry) {
+        continue; // Skip if boundry is null
+      }
+
+    if (booleanPointInPolygon(point, territory.boundry)) {
+        territoryID = territory.id;
+        break;
+    }
+
+  }
 
     const { data: location, error: locationError } = await supabase
     .from("locations")
@@ -42,9 +72,10 @@ router.post("/", requireAuth , async (req, res) => {
       description,
       estTime,
       creatorID: req.user.id,
-      locationID: location.id
+      locationID: location.id,
+      territoryID
     })
-    .select("*, location:locations(*)")
+    .select("*, location:locations(*), territory:territory(id, name)")
     .single();
 
   if (questError) {
