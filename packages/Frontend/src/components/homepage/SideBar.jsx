@@ -1,22 +1,22 @@
 import { useState } from "react";
 import {
-  Maximize2,
   Compass,
   Plus,
   Users,
   Heart,
   BarChart3,
+  Sparkles,
   Navigation
 } from "lucide-react"; 
-import { FriendsTab } from "./FriendsTab";
+import { FriendsTab } from "../FriendsTab";
 import "./SideBar.css";
 
-function SideBar() {
+function SideBar({ onCreateQuest }) {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   return (
     <div className="side-bar">
-      <button className="sidebar-button" aria-label="Expand">
-        <Maximize2 />
+      <button className="sidebar-button" aria-label="Add Quest" onClick={onCreateQuest}>
+        <Plus />
       </button>
 
       <div className="sidebar-divider"></div>
@@ -50,8 +50,8 @@ function SideBar() {
         <BarChart3 />
       </button>
 
-      <button className="sidebar-button" aria-label="Explore">
-        <Navigation />
+      <button className="sidebar-button" aria-label="Randomness">
+        <Sparkles />
       </button>
     </div>
   );

@@ -1,15 +1,16 @@
 import { useState } from "react"; 
-import { logIn } from "../services/authService"; 
+import { signUp } from "../../services/authService"; 
 import "./SignLog.css";
 import { useNavigate } from "react-router-dom"; 
-import { Link } from "react-router-dom";
-import logo from "../assets/SLAP_Logo.png";
-import patrick from "../assets/dumb-patrick.png";
+import { Link } from "react-router-dom"; 
+import logo from "../../assets/SLAP_Logo_Black.svg";
+import patrick from "../../assets/dumb-patrick.png";
 
 
-function LogIn() {
+function SignUp() {
   const navigate = useNavigate();
-  
+
+  const [username, setUsername] = useState("");  
   const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState("");
 
@@ -18,12 +19,12 @@ function LogIn() {
     event.preventDefault(); 
 
     try {
-       const data = await logIn(email, password); 
-       console.log("Logged in:", data);
+       const data = await signUp(email, password, username); 
+       console.log("Account created:", data);
        navigate("/profile") 
 
       } catch (error) {
-	      console.error("LogIn failed:", error.message); 
+	      console.error("SignUp failed:", error.message); 
       }
   }
 
@@ -33,11 +34,24 @@ function LogIn() {
       <img className="Patrick" src={patrick} alt="Dumb Patrick"/>
       <div className="signlog-content">
       <header className="header"> 
-        <h1>Wecome back Quester</h1>
-        <p>Lets get back to questing.</p>
+        <h1>Join Slap</h1>
+        <p>Start Now — We know you wanna get questing.</p>
       </header>
 
     <form onSubmit={handleSubmit}>
+    <div className= "signlog-field">
+      <label htmlFor="username-field">Username</label>
+      <input
+	      type="text"
+        id="username-field"
+        name="username"
+        autoComplete="username"
+        required
+	      value={username}
+	      onChange={(event) => setUsername(event.target.value)}
+      />
+    </div>
+
     <div className= "signlog-field">
       <label htmlFor="email-field">Email</label>
       <input
@@ -57,7 +71,7 @@ function LogIn() {
 	      type="password"
         id="password-field"
         name="password"
-        autoComplete="current-password"
+        autoComplete="new-password"
         required
 	      value={password}
 	      onChange={(event) => setPassword(event.target.value)}
@@ -65,13 +79,15 @@ function LogIn() {
     </div>
 
     <div className="buttons">
-      <button type="submit">Login</button>
+      <button type="submit">Sign Up</button>
     </div>
-    <p>First time questing? <Link to="/signup">Sign Up</Link></p>
+    <p>
+      Already have an Account? <Link to="/login">Log In</Link>
+    </p>
     </form>
     </div>
     </main>
   );
 }
 
-export default LogIn;
+export default SignUp;
