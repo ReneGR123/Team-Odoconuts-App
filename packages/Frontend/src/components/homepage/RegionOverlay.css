@@ -1,0 +1,114 @@
+.region-overlay {
+  position: fixed;
+  top: 120px;
+  left: 110px; /* just right of the sidebar, same spot as the Friends panel */
+  bottom: 28px;
+  z-index: 900;
+
+  box-sizing: border-box;
+  width: 360px;
+  max-height: 628px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 20px 16px;
+
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.region-header {
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.region-header h2 {
+  margin: 12px 0 0;
+}
+
+.region-count {
+  margin: 4px 0 8px;
+  color: grey;
+  font-size: 14px;
+}
+
+.region-close {
+  border: none;
+  outline: none;
+  background-color: white;
+  padding: 6px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.region-close:hover {
+  background-color: #f3f3f3;
+}
+
+.region-line {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 4px 10px 10px;
+}
+
+.region-empty {
+  color: grey;
+  text-align: center;
+}
+
+/* the list scrolls inside the panel when there are lots of quests */
+.region-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.region-quest {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  text-align: left;
+
+  border: none;
+  border-radius: 14px;
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+
+.region-quest:hover {
+  background-color: #e6e6e6;
+}
+
+.region-quest.is-selected {
+  background-color: #dcebe0;
+}
+
+.region-quest-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.region-quest-description {
+  color: #555;
+  font-size: 13px;
+
+  /* keep long descriptions to two lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.region-quest-meta {
+  color: grey;
+  font-size: 12px;
+}
