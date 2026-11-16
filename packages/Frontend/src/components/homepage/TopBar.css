@@ -23,10 +23,12 @@
   height: 64px;
   background: white;
   border-radius: 14px;
-  overflow: hidden;
+
+  position: relative; 
 }
 
 .icon-container {
+  border-radius: 14px 0 0 14px; 
   width: 30px;
   height: 64px;
   box-sizing: border-box;
@@ -57,6 +59,61 @@
   font-size: 20px;
   background: white;
   color: #808080;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 62px;
+  width: calc(100% - 62px);
+
+  background: white;
+  border-radius: 0 0 12px 12px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+  z-index: 1000;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-result-item {
+  width: 100%;
+  padding: 12px 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  background: white;
+  border: none;
+  border-bottom: 1px solid #ddd;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+.search-result-item:hover {
+  background: #f2f2f2;
+}
+
+.search-result-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.search-result-location {
+  margin-top: 3px;
+  font-size: 13px;
+  color: #666;
+}
+
+.search-no-results {
+  padding: 14px 16px;
+  background: white;
+  color: #666;
 }
 
 /* Filter buttons */

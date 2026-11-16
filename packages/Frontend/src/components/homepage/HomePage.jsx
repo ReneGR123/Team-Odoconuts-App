@@ -12,7 +12,9 @@ function HomePage() {
   const [isPickingLocation, setIsPickingLocation] = useState(false);
   const [pickedLocation, setPickedLocation] = useState(null);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchedQuest, setSearchedQuest] = useState(null); 
 
   function closeCreateQuest() {
     setIsCreateQuestOpen(false);
@@ -26,9 +28,13 @@ function HomePage() {
         pickedLocation={pickedLocation}
         onPickLocation={setPickedLocation}
 	searchQuery={searchQuery}
+	onSearchResults={setSearchResults}
+	searchedQuest={searchedQuest}
       />
 
-      <TopBar onSearch={setSearchQuery} />
+      <TopBar onSearch={setSearchQuery}
+	      searchResults={searchResults}
+	      onSelectQuest={setSearchedQuest}/>
 
       <SideBar
         onCreateQuest={() => {

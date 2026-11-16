@@ -4,10 +4,10 @@ import { setWorkerUrl } from "maplibre-gl";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Heart } from "lucide-react";
-import { completeQuest } from "../../services/questCompleteService"; 
+import { completeQuest } from "../../services/questCompleteService";
 
 // added questimports
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getQuests } from "../../services/questService";
 
 //favorite imports
@@ -21,12 +21,13 @@ import { planQuest, unplanQuest, getPlannedQuests, } from "../../services/planne
 // configure the map worker for vite
 setWorkerUrl(workerUrl); 
 
-function QuestMap({isPickingLocation, pickedLocation, onPickLocation, searchQuery }) {
+function QuestMap({isPickingLocation, pickedLocation, onPickLocation, searchQuery, onSearchResults, searchedQuest, }) {
 
         const [quests, setQuests] = useState([]);
         const [selectedQuest, setSelectedQuest] = useState(null);
 	const [favoriteQuestIDs, setFavoriteQuestIDs] = useState([]); 
 	const [plannedQuestIDs, setPlannedQuestIDs] = useState([]); 
+	const mapRef = useRef(null); 
 
 	async function handleFavorite() {
 	   if (!selectedQuest) return; 
@@ -136,9 +137,30 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation, searchQuer
 	    quest.location?.address?.toLowerCase().includes(search)
 	  );
 	}); 
+
+	useEffect(() => {
+	  onSearchResults(filteredQuests); 
+	}, [searchQuery, quests]); 
+
+	useEffect(() => {
+	  if (!searchedQuest || !mapRef.current) {
+	     return; 
+	  }
+	  
+	  setSelectedQuest(searchedQuest); 
+
+	  mapRef.current.flyTo({
+	     center: [
+		searchedQuest.location.longitude, 
+		searchedQuest.location.latitude,
+	     ], 
+	     zoom: 16, 
+	     duration: 1500, 
+	  });
+	}, [searchedQuest]); 
         
         return (
-                <Map initialViewState={{ longitude: -120.6596, latitude: 35.2828, zoom: 14 }}
+                <Map ref={mapRef} initialViewState={{ longitude: -120.6596, latitude: 35.2828, zoom: 14 }}
                         style={{ width: "100vw", height: "100vh" }} 
                         mapStyle="https://tiles.openfreemap.org/styles/liberty" 
                         onClick={(event) => {
