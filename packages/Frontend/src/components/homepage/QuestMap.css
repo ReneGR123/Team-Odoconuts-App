@@ -1,0 +1,8 @@
+.quest-photo {
+    width: 100%;
+    max-width: 300px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}

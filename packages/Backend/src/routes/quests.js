@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", async (req, res) => {
 const { data, error } = await supabase
         .from("quests")
-        .select("*, location:locations(*)");
+        .select(`*, location:locations(*), photos:questPhotos(id, storagePath)`);
 
     if (error) {
         console.error("Error getting quests:", error);
@@ -63,7 +63,7 @@ router.post("/", requireAuth , async (req, res) => {
 router.get("/mine", requireAuth, async (req, res) => {
   const { data, error } = await supabase
     .from("quests")
-    .select("*, location:locations(*)")
+    .select(`*, location:locations(*), photos:questPhotos(id, storagePath)`)
     .eq("creatorID", req.user.id);
 
   if (error) {
@@ -72,6 +72,123 @@ router.get("/mine", requireAuth, async (req, res) => {
   }
 
   res.json(data);
+});
+
+//edit a quest that belongs to an authenticated user 
+router.patch("/:questID", requireAuth, async (req, res) => {
+  const { questID } = req.params; 
+  const { title, description, estTime, locationName, address, latitude, longitude, } = req.body ?? {}; 
+
+  const { data: existingQuest, error: findError } = await supabase
+     .from("quests")
+     .select("id, creatorID, locationID")
+     .eq("id", questID) 
+     .eq("creatorID", req.user.id)
+     .single(); 
+
+  //get the quest and make sure it belongs to that authenticated user
+  if (findError || !existingQuest) {
+     return res.status(404).json({
+	error: "Quest not found or you do not have permission to edit it.", 
+     }); 
+  }
+
+  //update the quest information
+  const { error: questError } = await supabase
+    .from("quests")
+    .update({ title, description, estTime, })
+    .eq("id", questID)
+    .eq("creatorID", req.user.id); 
+
+  if (questError) {
+    console.error("Error updating quest:", questError); 
+    return res.status(500).json({
+       error: "Could not update quest.", 
+    }); 
+  }
+
+  //update the quest location
+  const { error: locationError } = await supabase
+    .from("locations")
+    .update({
+	 name: locationName, 
+	 address, 
+	 latitude, 
+	 longitude, })
+    .eq("id", existingQuest.locationID);
+
+  if (locationError) {
+    console.error("Error updating location:", locationError); 
+    return res.status(500).json({
+        error: "Quest updated, but location could not.", 
+    }); 
+  }
+
+    // Return the newly updated quest
+  const { data: updatedQuest, error: updatedQuestError } = await supabase
+    .from("quests")
+    .select(`*, location:locations(*), photos:questPhotos(id, storagePath)`)
+    .eq("id", questID)
+    .single();
+
+  if (updatedQuestError) {
+    console.error("Error getting updated quest:", updatedQuestError);
+    return res.status(500).json({
+      error: "Quest updated, but could not reload it.",
+    });
+  }
+
+  return res.json(updatedQuest);
+});
+
+// delete a quest that belongs to the authenticated user
+router.delete("/:questID", requireAuth, async (req, res) => {
+  const { questID } = req.params;
+
+  // Find the quest and make sure its made by authenticated user 
+  const { data: existingQuest, error: findError } = await supabase
+    .from("quests")
+    .select("id, creatorID, locationID")
+    .eq("id", questID)
+    .eq("creatorID", req.user.id)
+    .single();
+
+  if (findError || !existingQuest) {
+    return res.status(404).json({
+      error: "Quest not found or you do not have permission to delete it.",
+    });
+  }
+
+  const { error: photoDeleteError } = await supabase
+     .from("questPhotos")
+     .delete()
+     .eq("questID", questID); 
+
+  if (photoDeleteError) {
+     console.error("Error deleting quest photos:", photoDeleteError); 
+     return res.status(500).json({
+	error: "Could not delete quest photos.", 
+     }); 
+  }
+
+  // Delete the quest
+  const { error: deleteError } = await supabase
+    .from("quests")
+    .delete()
+    .eq("id", questID)
+    .eq("creatorID", req.user.id);
+
+  if (deleteError) {
+    console.error("Error deleting quest:", deleteError);
+    return res.status(500).json({
+      error: "Could not delete quest.",
+    });
+  }
+
+  return res.json({
+    message: "Quest deleted successfully.",
+    questID,
+  });
 });
 
 export default router;

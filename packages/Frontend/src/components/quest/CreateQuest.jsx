@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createQuest } from "../../services/questService";
+import { uploadQuestPhoto, saveQuestPhoto } from "../../services/photoService";
 
 function CreateQuest({ pickedLocation, onChooseLocation }) {
     const [title, setTitle] = useState("");
@@ -7,6 +8,7 @@ function CreateQuest({ pickedLocation, onChooseLocation }) {
     const [estTime, setEstTime] = useState("");
     const [locationName, setLocationName] = useState("");
     const [address, setAddress] = useState("");
+    const [photos, setPhotos] = useState([]);
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -17,7 +19,7 @@ function CreateQuest({ pickedLocation, onChooseLocation }) {
         }
 
         try {
-            await createQuest({
+            const newQuest = await createQuest({
                 title,
                 description,
                 estTime: Number(estTime),
@@ -27,7 +29,25 @@ function CreateQuest({ pickedLocation, onChooseLocation }) {
                 longitude: pickedLocation.longitude,            
             });
 
-            console.log("Quest created!!")
+	      console.log("Quest created!!", newQuest)
+	    
+	    //adding multiple photos to one quest
+	    if (photos.length > 0) {
+		for (const photo of photos) {
+		  const storagePath = await uploadQuestPhoto(
+		    newQuest.id, photo
+		); 
+
+	    console.log("Photo uploaded!!", storagePath); 
+
+	    const savedPhoto = await saveQuestPhoto(
+	        newQuest.id, 
+		storagePath
+	    ); 
+
+	    console.log("Photo saved to database!!", savedPhoto); 
+	    }
+	  }
         } catch (error) {
             console.error(error.message);
         }
@@ -78,6 +98,13 @@ function CreateQuest({ pickedLocation, onChooseLocation }) {
                 onChange={(event) => setAddress(event.target.value)}
                 placeholder="Address"
             />
+
+	    <input 
+	    	type="file"
+	        accent="image/*"
+	        multiple
+	        onChange={(event) => setPhotos(Array.from(event.target.files))}
+	    />
 
             <button type="submit">Create Quest</button>
         </form>
