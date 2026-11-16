@@ -8,7 +8,7 @@ import {
   Sparkles,
   Navigation
 } from "lucide-react"; 
-import { FriendsTab } from "./FriendsTab";
+import { FriendsTab } from "../FriendsTab";
 import "./SideBar.css";
 
 function SideBar({ onCreateQuest }) {
