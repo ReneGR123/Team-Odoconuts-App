@@ -21,7 +21,7 @@ import { planQuest, unplanQuest, getPlannedQuests, } from "../../services/planne
 // configure the map worker for vite
 setWorkerUrl(workerUrl); 
 
-function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
+function QuestMap({isPickingLocation, pickedLocation, onPickLocation, searchQuery }) {
 
         const [quests, setQuests] = useState([]);
         const [selectedQuest, setSelectedQuest] = useState(null);
@@ -121,6 +121,21 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
 		loadFavorites();
 		loadPlannedQuests(); 
         }, []);
+
+	const filteredQuests = quests.filter((quest) => {
+	  const search = (searchQuery || "").toLowerCase().trim(); 
+
+	  if (!search) {
+	     return true; 
+	  }
+	
+	  return (
+	    quest.title?.toLowerCase().includes(search) ||
+	    quest.description?.toLowerCase().includes(search) ||
+	    quest.location?.name?.toLowerCase().includes(search) ||
+	    quest.location?.address?.toLowerCase().includes(search)
+	  );
+	}); 
         
         return (
                 <Map initialViewState={{ longitude: -120.6596, latitude: 35.2828, zoom: 14 }}
@@ -138,7 +153,7 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                         }}
                 >
 
-                {quests.map((quest) => (
+                {filteredQuests.map((quest) => (
                         <Marker key={quest.id} longitude={quest.location.longitude} latitude={quest.location.latitude} onClick={(event) => {event.originalEvent.stopPropagation(); setSelectedQuest(quest); }}>
                                 <button type="button" className="quest-marker" >
                                         ⚔

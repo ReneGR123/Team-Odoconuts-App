@@ -4,7 +4,7 @@ import "./TopBar.css";
 import { supabase } from "../../utils/supabase"; 
 import icon from "../../assets/SLAP_icon_white.png";
 
-function TopBar() {
+function TopBar({ onSearch }) {
   const navigate = useNavigate(); 
 
   async function handleProfileClick() {
@@ -30,6 +30,7 @@ function TopBar() {
           className="search-bar"
           type="text"
           placeholder="where to..."
+	  onChange={(event) => onSearch(event.target.value)}
         />
       </div>
 
