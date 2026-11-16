@@ -14,7 +14,7 @@ function HomePage() {
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [searchedQuest, setSearchedQuest] = useState(null); 
+  const [searchedQuest, setSearchedQuest] = useState(null);  
 
   function closeCreateQuest() {
     setIsCreateQuestOpen(false);
@@ -49,6 +49,10 @@ function HomePage() {
       <FavoritesPanel
         isOpen={isFavoritesOpen}
         onClose={() => setIsFavoritesOpen(false)}
+	onSelectQuest={(quest) => {
+	   setSearchedQuest(quest); 
+	   setIsFavoritesOpen(false); 
+	}}
       />
 
       {isCreateQuestOpen && (

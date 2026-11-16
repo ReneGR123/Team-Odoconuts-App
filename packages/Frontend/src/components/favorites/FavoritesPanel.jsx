@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getFavoriteQuests } from "../../services/favoriteService"; 
 import "./FavoritesPanel.css"; 
 
-function FavoritesPanel({ isOpen, onClose }) {
+function FavoritesPanel({ isOpen, onClose, onSelectQuest }) {
 	const [favoriteQuests, setFavoriteQuests] = useState([]); 
 
 	useEffect(() => {
@@ -41,6 +41,7 @@ function FavoritesPanel({ isOpen, onClose }) {
 			  favoriteQuests.map((favorite) => (
 				  <div
 				    className="favorite-quest-card" key={favorite.questID}
+				        onClick={() => onSelectQuest(favorite.quest)}
 				  >
 
 				  <h3>{favorite.quest.title}</h3>
