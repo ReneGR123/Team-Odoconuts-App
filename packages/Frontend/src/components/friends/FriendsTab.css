@@ -1,0 +1,98 @@
+.friends-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+
+}
+
+.friends-overlay,
+.overlay-Bg {
+    background: transparent;
+}
+
+.friends-container {
+  box-sizing: border-box;
+  width: 500px;
+  height: 628px;
+  padding: 8px 20px;
+  background: white;
+  position: absolute;
+  top: 120px;
+  left: 110px;
+  border-radius: 14px;
+}
+
+.friends-header {
+  margin: 0 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.friends-header button {
+  border: none;
+  outline: none;
+  background-color: white;
+  
+}
+
+.friends-header button:hover{
+  border: none;
+  outline: none;
+  background-color: #f3f3f3;
+  border-radius: 14px;
+}
+
+.friends-search-field form {
+  display: flex;
+  width: 100%;
+  margin: 0 0 10px;
+}
+
+.friends-search-field input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 14px;
+  outline: none;
+  border: none;
+  background-color: #f3f3f3;
+}
+
+.friend-nav{
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  margin-left: 40px;
+}
+
+.friend-nav button {
+  padding: 12px 25px;
+  border-radius: 14px;
+  border: none;
+  background-color: white;
+}
+
+.friend-nav button:hover {
+  border: none;
+  background-color: #ddd;
+  border-radius: 14px;
+}
+
+.buttons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: grey;
+}
+.custom-line {
+  border: none;             
+  border-top: 1px solid #ddd; 
+  margin: 10px 30px 0 30px;                       
+}
