@@ -9,7 +9,8 @@ router.get("/", requireAuth, async(req, res) => {
     .from("questComplete")
     .select(`*, quest:quests (
        id, 
-       title, 
+       title,
+       description,
        estTime, 
        location:locations (
              name, 

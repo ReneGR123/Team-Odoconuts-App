@@ -358,6 +358,16 @@
   margin: 4px 0;
 }
 
+.quest-card-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  line-height: 1.4;
+  cursor: pointer;
+}
+
 .quest-card .favorite-button {
   position: absolute;
   top: 16px;
@@ -430,4 +440,46 @@
   width: 28px;
   height: 28px;
   stroke-width: 2.5;
+}
+
+.description-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.75);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  z-index: 10;
+}
+
+.description-popup {
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+
+  background: white;
+  color: black;
+
+  border-radius: 12px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.description-popup h3 {
+  margin: 0 0 10px;
+}
+
+.description-popup p {
+  margin: 0 0 15px;
+  line-height: 1.4;
+}
+
+.description-popup button {
+  cursor: pointer;
 }
