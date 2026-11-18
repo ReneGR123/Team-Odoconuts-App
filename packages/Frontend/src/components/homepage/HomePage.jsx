@@ -66,16 +66,11 @@ function HomePage() {
             className="create-quest-modal"
             onClick={(event) => event.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={closeCreateQuest}
-            >
-              ×
-            </button>
 
             <CreateQuest
               pickedLocation={pickedLocation}
               onChooseLocation={() => setIsPickingLocation(true)}
+              onClose={closeCreateQuest}
             />
           </div>
         </div>
