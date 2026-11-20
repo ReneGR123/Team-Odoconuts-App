@@ -1,4 +1,5 @@
-import { supabase } from "../utils/supabase"; 
+import { supabase } from "../utils/supabase";
+import { apiRequest } from "./api";
 
 //send account information to supabase auth and return whether user data is valid or error 
 export async function signUp(email, password, username) {
