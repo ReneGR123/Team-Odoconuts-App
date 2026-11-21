@@ -12,6 +12,9 @@ function HomePage() {
   const [isPickingLocation, setIsPickingLocation] = useState(false);
   const [pickedLocation, setPickedLocation] = useState(null);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchedQuest, setSearchedQuest] = useState(null);  
 
   function closeCreateQuest() {
     setIsCreateQuestOpen(false);
@@ -24,9 +27,14 @@ function HomePage() {
         isPickingLocation={isPickingLocation}
         pickedLocation={pickedLocation}
         onPickLocation={setPickedLocation}
+	searchQuery={searchQuery}
+	onSearchResults={setSearchResults}
+	searchedQuest={searchedQuest}
       />
 
-      <TopBar />
+      <TopBar onSearch={setSearchQuery}
+	      searchResults={searchResults}
+	      onSelectQuest={setSearchedQuest}/>
 
       <SideBar
         onCreateQuest={() => {
@@ -41,6 +49,10 @@ function HomePage() {
       <FavoritesPanel
         isOpen={isFavoritesOpen}
         onClose={() => setIsFavoritesOpen(false)}
+	onSelectQuest={(quest) => {
+	   setSearchedQuest(quest); 
+	   setIsFavoritesOpen(false); 
+	}}
       />
 
       {isCreateQuestOpen && (
@@ -54,16 +66,11 @@ function HomePage() {
             className="create-quest-modal"
             onClick={(event) => event.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={closeCreateQuest}
-            >
-              ×
-            </button>
 
             <CreateQuest
               pickedLocation={pickedLocation}
               onChooseLocation={() => setIsPickingLocation(true)}
+              onClose={closeCreateQuest}
             />
           </div>
         </div>

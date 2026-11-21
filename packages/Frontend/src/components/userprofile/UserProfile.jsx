@@ -9,7 +9,7 @@ import {logOut} from "../../services/authService.js";
 import { getFavoriteQuests } from "../../services/favoriteService";
 import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
 import { getCompletedQuests } from "../../services/questCompleteService";
-import slapLogo from "../../assets/SLAP_logo.png";
+import slapLogo from "../../assets/SLAP_Logo.png";
 import { getPlannedQuests } from "../../services/plannedService"; 
 
 

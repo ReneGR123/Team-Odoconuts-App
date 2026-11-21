@@ -1,0 +1,466 @@
+/* ==========================================================================
+   CreateQuest overlay
+   ========================================================================== */
+
+/* ---------- Design tokens ---------- */
+.quest-overlay {
+    --color-text: #000;
+    --color-surface: #fff;
+    --color-border: #ddd;
+    --color-border-soft: #f5f5f5;
+    /* One grey family: buttons share --grey, panels share --grey-light */
+    --grey: #d4d4d4;
+    --grey-hover: #bcbcbc;
+    --grey-light: #e8e8e8;
+    --grey-light-hover: #dedede;
+
+    --color-photo-bg: var(--grey-light);
+    --color-btn-bg: var(--grey);
+    --color-btn-bg-hover: var(--grey-hover);
+
+    /* Input boxes (textareas + selects) */
+    --color-field-bg: var(--grey-light);
+    --color-field-border: var(--grey);
+    --color-field-text: #111;
+    --color-field-placeholder: #8a8c94;
+
+    /* "Name your quest..." title */
+    --color-title-text: #111;
+    --color-title-placeholder: #b8bac2;
+
+    --color-focus: #9ba9ff;
+
+    --radius-sm: 8px;
+    --radius-lg: 30px;
+    --space-sm: 0.5rem;
+    --space-md: 0.75rem;
+    --space-lg: 1.25rem;
+    --space-xl: 1.75rem;
+    --slap-size: 52px;
+    --wheel-item: 44px;            /* height of one number in the scroll wheel */
+}
+
+/* ---------- Base / overlay ---------- */
+.quest-overlay,
+.quest-overlay *,
+.quest-overlay *::before,
+.quest-overlay *::after {
+    box-sizing: border-box;
+}
+
+.quest-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+.overlay-Bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: auto;
+    background: transparent;
+}
+
+/* ---------- Container + header ---------- */
+.quest-container {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    width: min(1050px, 92vw);
+    height: min(650px, 85vh);
+    overflow: hidden;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-lg);
+}
+
+.quest-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.quest-header h2 {
+    margin: 0;
+}
+
+/* ---------- Buttons ---------- */
+.quest-header button,
+.quest-fields button {
+    padding: 0.65rem 1rem;
+    color: var(--color-text);
+    background: var(--color-btn-bg);
+    border: 0;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.quest-header button:hover,
+.quest-fields button:hover {
+    background: var(--color-btn-bg-hover);
+}
+
+.create-quest {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: var(--space-sm);
+}
+
+/* ---------- Form + two-column layout ---------- */
+.quest-form {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+}
+
+.quest-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); /* photo / fields: try 1.5fr / 0.5fr for a bigger photo */
+    grid-template-rows: minmax(0, 1fr); /* single row fills the full height */
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+}
+
+/* ---------- Photo panel (left side) ---------- */
+.quest-photo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    justify-self: stretch;
+    align-self: stretch;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--color-photo-bg);
+    transition: background 0.15s ease;
+}
+
+.quest-photo:hover {
+    background: var(--grey-light-hover);
+}
+
+/* Visually hidden but still focusable / accessible */
+.photo-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Image fills the entire panel; the panel itself provides the height */
+.quest-photo-preview {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-picker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    padding: 0.75rem 1rem;
+    color: var(--color-text);
+    background: var(--color-btn-bg);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.photo-picker:hover {
+    background: var(--color-btn-bg-hover);
+    transform: translate(-50%, calc(-50% - 2px));
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* "Add photos here" text above the button; hidden once a preview exists */
+.photo-prompt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    color: #6b6b6b;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, calc(-100% - 2.25rem));
+}
+
+.quest-photo-preview ~ .photo-prompt {
+    display: none;
+}
+
+.photo-picker--change {
+    top: auto;
+    right: 1rem;
+    bottom: 1rem;
+    left: auto;
+    transform: none;
+}
+
+.photo-picker--change:hover {
+    transform: translateY(-2px);
+}
+
+.photo-input:focus-visible ~ .photo-picker {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+/* ---------- Fields panel (right side) ---------- */
+.quest-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);          /* space between each section */
+    min-width: 0;
+    min-height: 0;
+    padding: var(--space-xl);
+    overflow-y: auto;
+}
+
+.quest-fields > * {
+    flex-shrink: 0;                /* keep sections from squishing */
+}
+
+.quest-fields p {
+    margin: 0;
+}
+
+.quest-fields label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+}
+
+.quest-fields input[type="text"],
+.quest-fields input[type="number"],
+.quest-fields textarea,
+.quest-fields select {
+    width: 100%;
+    padding: 0.7rem;
+    color: var(--color-field-text);
+    background: var(--color-field-bg);
+    border: 0;
+    border-radius: var(--radius-sm);
+    font: inherit;
+}
+
+.quest-fields textarea:focus,
+.quest-fields select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-focus);   /* keyboard-friendly focus, no resting outline */
+}
+
+.quest-fields textarea::placeholder {
+    color: var(--color-field-placeholder);
+}
+
+.quest-fields textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* Title: large, borderless, blends into the panel */
+.quest-fields #title {
+    width: 100%;
+    padding: 0.25rem 0;
+    color: var(--color-title-text);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.quest-fields #title::placeholder {
+    color: var(--color-title-placeholder);
+    opacity: 1;
+}
+
+.quest-fields #title:focus {
+    outline: none;
+}
+
+/* ---------- Slap rating ---------- */
+.slaps {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.slaps legend,
+.duration-picker legend {
+    margin-bottom: var(--space-md);
+    font-weight: 600;
+}
+
+.slap-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.slap-option {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.slap-option input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.slap-option img {
+    display: block;
+    width: var(--slap-size);
+    height: var(--slap-size);
+    object-fit: contain;
+}
+
+.slap-option input[type="radio"]:focus-visible + img {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+/* ---------- Duration picker ---------- */
+.duration-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin: 0;
+    padding: var(--space-lg);
+    border: 1px solid var(--color-field-border);
+    border-radius: var(--radius-sm);
+}
+
+.duration-picker legend {
+    padding: 0 0.25rem;
+}
+
+.duration-field {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 65px;
+}
+
+/* ---------- Scroll-wheel number picker (duration) ---------- */
+.wheel-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+}
+
+.wheel {
+    position: relative;
+    height: calc(var(--wheel-item) * 3);   /* shows 3 numbers at once */
+    overflow: hidden;
+    background: var(--color-field-bg);
+    border-radius: var(--radius-sm);
+}
+
+.wheel:focus-within {
+    box-shadow: 0 0 0 2px var(--color-focus);
+}
+
+/* The band behind the selected (middle) number */
+.wheel-highlight {
+    position: absolute;
+    top: var(--wheel-item);
+    right: 0;
+    left: 0;
+    height: var(--wheel-item);
+    background: var(--grey);
+    pointer-events: none;
+}
+
+.wheel-list {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    padding: var(--wheel-item) 0;           /* lets 0 and the last number reach the middle */
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    outline: none;
+}
+
+.wheel-list::-webkit-scrollbar {
+    display: none;
+}
+
+.wheel-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--wheel-item);
+    color: var(--color-field-placeholder);
+    font-weight: 600;
+    scroll-snap-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.wheel-item--selected {
+    color: var(--color-text);
+}
+
+/* ==========================================================================
+   Mobile (single column, photo on top)
+   ========================================================================== */
+@media (max-width: 700px) {
+    .overlay-Bg {
+        align-items: flex-start;
+    }
+
+    .quest-container {
+        width: 100%;
+        height: 90vh;
+    }
+
+    /* The whole body scrolls as one column instead of the fields alone */
+    .quest-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        align-content: start;
+        overflow-y: auto;
+    }
+
+    /* The panel gets a real height, and the absolutely positioned preview
+       fills it via inset: 0 (no img height override needed). */
+    .quest-photo {
+        height: 35vh;
+        min-height: 220px;
+        max-height: 360px;
+    }
+
+    .quest-fields {
+        overflow: visible;
+    }
+
+    .quest-overlay {
+        --slap-size: 44px;
+    }
+}
