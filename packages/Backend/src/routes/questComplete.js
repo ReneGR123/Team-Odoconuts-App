@@ -9,8 +9,15 @@ router.get("/", requireAuth, async(req, res) => {
     .from("questComplete")
     .select(`*, quest:quests (
        id, 
-       title, 
-       estTime)`)
+       title,
+       description,
+       estTime, 
+       location:locations (
+             name, 
+             address), 
+       photos:questPhotos (
+             id, 
+             storagePath))`)
     .eq("userID", req.user.id); 
 
   if (error) {
@@ -36,6 +43,12 @@ router.post("/:questID", requireAuth, async (req, res) => {
     .single();
 
   if (error) {
+    if (error.code == "23505") {
+       return res.status(409).json({
+	   error: "Quest already completed.", 
+       }); 
+    }
+
     console.error("Error completing quest:", error);
     return res.status(500).json({
       error: "Could not complete quest.",

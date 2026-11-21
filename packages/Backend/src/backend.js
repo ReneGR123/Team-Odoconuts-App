@@ -12,7 +12,8 @@ import authRouter from "./routes/auth.js";
 import favoritesRouter from "./routes/favorites.js";
 //import photos 
 import questPhotosRouter from "./routes/questPhotos.js";
-import questCompleteRouter from "./routes/questComplete.js"; 
+import questCompleteRouter from "./routes/questComplete.js";
+import plannedRouter from "./routes/planned.js"; 
 
 const app = express();
 const port = 8000;
@@ -32,6 +33,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/favorites", favoritesRouter); 
 app.use("/api/quest-photos", questPhotosRouter); 
 app.use("/api/quest-complete", questCompleteRouter); 
+app.use("/api/planned", plannedRouter); 
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

@@ -14,7 +14,9 @@ import { getQuests } from "../../services/questService";
 import { favoriteQuest, unfavoriteQuest, getFavoriteQuests } from "../../services/favoriteService";
 
 //photos imports  
-import { getQuestPhotoUrl } from "../../services/photoService"; 
+import { getQuestPhotoUrl } from "../../services/photoService";
+import { planQuest, unplanQuest, getPlannedQuests, } from "../../services/plannedService"; 
+
 
 // configure the map worker for vite
 setWorkerUrl(workerUrl); 
@@ -24,6 +26,7 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
         const [quests, setQuests] = useState([]);
         const [selectedQuest, setSelectedQuest] = useState(null);
 	const [favoriteQuestIDs, setFavoriteQuestIDs] = useState([]); 
+	const [plannedQuestIDs, setPlannedQuestIDs] = useState([]); 
 
 	async function handleFavorite() {
 	   if (!selectedQuest) return; 
@@ -59,6 +62,33 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
 	  }
 	}
 
+	async function handlePlanQuest() {
+	   if (!selectedQuest) return;
+	  
+	   const questID = selectedQuest.id;
+           const isPlanned = plannedQuestIDs.includes(questID);
+
+           try {
+             if (isPlanned) {
+                 await unplanQuest(questID);
+
+                 setPlannedQuestIDs(
+                    plannedQuestIDs.filter((id) => id !== questID),
+                 );
+
+                 console.log("Quest removed from planned");
+              } else {
+                 await planQuest(questID);
+
+                 setPlannedQuestIDs([...plannedQuestIDs, questID]);
+
+                 console.log("Quest planned!");
+              }
+             } catch (error) {
+                 console.error("Could not update planned quest:", error.message);
+           }
+          }
+
         useEffect(() => {
                 async function loadQuests() {
                         try {
@@ -77,10 +107,19 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
 		      console.error("Could not load favorites:", error.message); 
 		    }
 		}
-			 
+
+		async function loadPlannedQuests() {
+		   try {
+		      const data = await getPlannedQuests(); 
+		      setPlannedQuestIDs(data.map((planned) => planned.questID)); 
+		   } catch (error) {
+		      console.error("Could not load planned quests:", error.message); 
+		   }
+		}	 
 
                 loadQuests();
-		loadFavorites(); 
+		loadFavorites();
+		loadPlannedQuests(); 
         }, []);
         
         return (
@@ -136,6 +175,16 @@ function QuestMap({isPickingLocation, pickedLocation, onPickLocation }) {
                                 <p>⏱ {selectedQuest.estTime} minutes</p>
                                 <p>{selectedQuest.location.address}</p>
 
+			   <button 
+			      type="button"
+			      className="plan-quest-button" 
+			      onClick={handlePlanQuest}
+			   >
+			     {plannedQuestIDs.includes(selectedQuest.id)
+				 ? "Remove from Planned"
+				 : "Plan Quest"}
+		           </button> 
+			    
 			    <button 
 			       type="button"
 			       className="complete-quest-button"

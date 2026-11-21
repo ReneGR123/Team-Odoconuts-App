@@ -10,6 +10,7 @@ import { getFavoriteQuests } from "../../services/favoriteService";
 import { uploadProfilePicture, saveProfilePicture, getProfilePictureUrl, getMyProfile } from "../../services/photoService"; 
 import { getCompletedQuests } from "../../services/questCompleteService";
 import slapLogo from "../../assets/SLAP_logo.png";
+import { getPlannedQuests } from "../../services/plannedService"; 
 
 
 function UserProfile() {
@@ -26,7 +27,9 @@ function UserProfile() {
 	const [profile, setProfile] = useState(null);
 	const [completedQuests, setCompletedQuests] = useState([]); 
 	//editing a quest
-	const [editingQuest, setEditingQuest] = useState(null); 
+	const [editingQuest, setEditingQuest] = useState(null);
+	//planned quest state
+	const [plannedQuests, setPlannedQuests] = useState([]); 
 
 	console.log("ACTIVE TAB:", activeTab); 
 
@@ -62,6 +65,35 @@ function UserProfile() {
 }, []); 
 
 	useEffect(() => {
+           async function loadFavorites() {
+
+	     try {
+	       const data = await getFavoriteQuests();
+	       setFavoriteQuests(data);
+	     } catch (error) {
+	       console.error("Could not load favorite quests:", error.message);
+	     }
+	   }
+
+	   loadFavorites();
+	}, []);
+
+	useEffect(() => {
+	   async function loadPlannedQuests() {
+	      if (activeTab !== "planned") return; 
+
+	      try {
+		 const data = await getPlannedQuests(); 
+		 setPlannedQuests(data); 
+	      } catch (error) {
+		 console.error("Could not load planned quests:", error.message); 
+	      }
+	   }
+
+	   loadPlannedQuests(); 
+	}, [activeTab]); 
+
+	useEffect(() => {
 	   async function loadCompletedQuests() {
 	      try {
 		 const data = await getCompletedQuests(); 
@@ -73,22 +105,6 @@ function UserProfile() {
 
 	   loadCompletedQuests(); 
 	}, []); 
-
-
-	useEffect(() => {
-           async function loadFavorites() {
-	     if (activeTab !== "favorites") return; 
-
-	     try {
-	       const data = await getFavoriteQuests(); 
-	       setFavoriteQuests(data); 
-	     } catch (error) {
-	       console.error("Could not load favorite quests:", error.message); 
-	     }
-	   }
-	 
-	   loadFavorites(); 
-	}, [activeTab]);
 
 	 
 
@@ -280,7 +296,7 @@ function UserProfile() {
       </section>
         
 	<div className="profile-tabs">
-	  <button className="profile-tab"> 
+	  <button className="profile-tab" onClick={() => setActiveTab("history")}> 
 	    <BookOpen />
 	    Quest History
 	  </button> 
@@ -295,7 +311,7 @@ function UserProfile() {
 	    Quest Created
 	  </button> 
 
-	  <button className="profile-tab">
+	  <button className="profile-tab" onClick={() => setActiveTab("planned")}>
 	    <Footprints />
 	    Planned
 	  </button>
@@ -307,14 +323,34 @@ function UserProfile() {
     	<QuestCard key={quest.id} quest={quest} editable={true} onEdit={setEditingQuest} onDelete={handleDeleteQuest} initiallyFavorited={favoriteQuests.some((favorite) => favorite.questID === quest.id)}/> ))}
 
 	{activeTab === "favorites" && favoriteQuests.map((favorite) => (
-	   <QuestCard key={favorite.questID} quest={favorite.quest} initiallyFavorited={true} onFavoriteChange={(questID, isFavorited) => {
-		   if (!isFavorited) {
-		       setFavoriteQuests((currentFavorites) => currentFavorites.filter((favorite) => favorite.questID !== questID)
-		       );
-		   }
-	   }}
-	/>
+	   <QuestCard key={favorite.questID} 
+		      quest={favorite.quest}
+		      initiallyFavorited={true}
+		      onFavoriteChange={(questID, isFavorited) => {
+			   if (!isFavorited) {
+				  setFavoriteQuests((currentFavorites) => 
+					currentFavorites.filter(
+					   (favorite) => favorite.questID !== questID
+					)
+				  ); 
+			   }
+		      }}
+		/>
 	))}
+
+       {activeTab === "history" && completedQuests.map((completed) => (
+	   <QuestCard key={completed.id} 
+	       quest={completed.quest}
+	       initiallyFavorited={favoriteQuests.some(
+		       (favorite) => favorite.questID === completed.quest.id
+	       )}
+	    />
+       ))}
+	
+       {activeTab === "planned" && plannedQuests.map((planned) => (
+	   <QuestCard key={planned.questID} quest={planned.quest}
+	     />
+       ))}
      </div>
 	
        {editingQuest && (
