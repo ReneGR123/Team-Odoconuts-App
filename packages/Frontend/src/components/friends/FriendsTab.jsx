@@ -12,9 +12,12 @@ export function FriendsTab({ isOpen, onClose}){
 
     }
     return (
-        <div className="friends-overlay">
+        <div className="friends-overlay" onClick={onClose}>
             <div className="overlay-Bg">
-                <div className="friends-container">
+	      <div
+                 className="friends-container"
+	         onClick={(e) => e.stopPropagation()}
+	      >
                     <div className="friends-header">
                         <h2>Questers</h2>  
                         <button type="button" onClick={onClose}>

@@ -25,7 +25,11 @@ function FavoritesPanel({ isOpen, onClose, onSelectQuest }) {
 	}
 
 	return (
-		<div className="favorites-panel">
+		<div className="favorites-overlay" onClick={onClose}>
+		 <div
+		    className="favorites-panel"
+		    onClick={(e) => e.stopPropagation()}
+		 >
 		  <div className="favorites-header">
 		    <h2>Your Favorite Quests</h2>
 
@@ -56,6 +60,7 @@ function FavoritesPanel({ isOpen, onClose, onSelectQuest }) {
 			  ))
 		  )}
 		</div>
+	    </div>
 	</div>
 	);
 }
