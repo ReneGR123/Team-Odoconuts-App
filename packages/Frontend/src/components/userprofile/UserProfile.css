@@ -65,6 +65,10 @@
   flex-shrink: 0;
   overflow: hidden; 
   cursor: pointer;
+
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
 }
 
 .profile-picture-image {
