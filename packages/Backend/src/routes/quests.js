@@ -2,6 +2,7 @@ import {Router} from "express";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { supabase } from "../supabase.js";
 import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
+import { validateQuestData } from "../utils/questvalidation.js";
 
 const router = Router();
 
@@ -23,8 +24,16 @@ const { data, error } = await supabase
 
 //create a new quest
 router.post("/", requireAuth , async (req, res) => {
-  const {title, description, estTime, locationName, address, latitude, longitude} = req.body ?? {};
+  const questData = req.body ?? {}; 
+	const validation = validateQuestData(questData); 
 
+	if (!validation.valid) {
+		return res.status(400).json({
+			error: validation.error, 
+		}); 
+	}
+
+	const { title, description, estTime, locationName, address, latitude, longitude, } = questData; 
 
     const {data : territories, error : territoryError} = await supabase
     .from("territory")
@@ -200,6 +209,19 @@ router.delete("/:questID", requireAuth, async (req, res) => {
      return res.status(500).json({
 	error: "Could not delete quest photos.", 
      }); 
+  }
+
+  // completely deleting a quest from the user profile (includes all other tabs) 
+  const { errror: completeDeleteError } = await supabase
+	.from("questComplete")
+	.delete()
+	.eq("questID", questID); 
+
+  if (completeDeleteError) {
+	  console.error("Error deleting quest completions:", completeDeleteError); 
+	  return res.status(500).json({
+		  error: "Could not delete quest completions.", 
+	  }); 
   }
 
   // Delete the quest

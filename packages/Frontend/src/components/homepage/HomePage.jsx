@@ -42,8 +42,11 @@ function HomePage() {
           setIsPickingLocation(false);
         }}
         onFavorites={() => {
-          setIsFavoritesOpen(true);
+          setIsFavoritesOpen((prev) => !prev);
         }}
+	onFriends={() => {
+	  setIsFavoritesOpen(false); 
+	}}
       />
 
       <FavoritesPanel
