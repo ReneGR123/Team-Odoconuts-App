@@ -14,6 +14,9 @@ import favoritesRouter from "./routes/favorites.js";
 //import photos 
 import questPhotosRouter from "./routes/questPhotos.js";
 import questCompleteRouter from "./routes/questComplete.js";
+//leaderboard imports 
+import leaderboardRouter from "./routes/leaderboard.js"; 
+
 import plannedRouter from "./routes/planned.js"; 
 
 const app = express();
@@ -35,6 +38,9 @@ app.use("/api/territories", territorysRouter);
 app.use("/api/favorites", favoritesRouter); 
 app.use("/api/quest-photos", questPhotosRouter); 
 app.use("/api/quest-complete", questCompleteRouter); 
+//more leaderboard
+app.use("/api/leaderboard", leaderboardRouter); 
+
 app.use("/api/planned", plannedRouter); 
 
 app.listen(port, () => {

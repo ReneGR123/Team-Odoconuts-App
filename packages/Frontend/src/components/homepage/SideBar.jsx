@@ -11,7 +11,7 @@ import {
 import { FriendsTab } from "../friends/FriendsTab";
 import "./SideBar.css";
 
-function SideBar({ onCreateQuest, onFavorites }) {
+function SideBar({ onCreateQuest, onFavorites, onFriends }) {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   return (
@@ -33,7 +33,10 @@ function SideBar({ onCreateQuest, onFavorites }) {
       <button
         className="sidebar-button"
         aria-label="Friends"
-        onClick={() => setIsOverlayOpen(true)}
+        onClick={() => {
+		setIsOverlayOpen((prev) => !prev); 
+		onFriends(); 
+	}}
       >
         <Users />
       </button>
